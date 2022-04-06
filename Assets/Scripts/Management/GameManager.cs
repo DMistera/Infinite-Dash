@@ -1,18 +1,18 @@
-﻿using System;
+﻿ using System;
 using System.Collections;
 using UnityEngine;
 
-public class GameStateHolder : MonoBehaviour {
+public class GameManager : MonoBehaviour {
 
-    public static GameStateHolder Instance {
+    public static GameManager Instance {
         get {
             if (instance == null) {
-                instance = FindObjectOfType<GameStateHolder>();
+                instance = FindObjectOfType<GameManager>();
             }
             return instance;
         }
     }
-    private static GameStateHolder instance;
+    private static GameManager instance;
 
     public GameState State { 
         get {
@@ -20,16 +20,15 @@ public class GameStateHolder : MonoBehaviour {
         } 
         set {
             if (state != value) {
-                OnExit?.Invoke(state);
+                OnStateExit?.Invoke(state);
                 state = value;
-                OnEnter?.Invoke(state);
+                OnStateEnter?.Invoke(state);
             }
         } 
     }
     private GameState state = GameState.LOADING;
 
-    public Action<GameState> OnEnter;
-    public Action<GameState> OnExit;
-
+    public Action<GameState> OnStateEnter;
+    public Action<GameState> OnStateExit;
 
 }

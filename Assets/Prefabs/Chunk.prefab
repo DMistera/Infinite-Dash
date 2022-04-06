@@ -47,6 +47,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 2320231530827243513, guid: bf5842685b63150489e37eb266da1af2, type: 3}
   solidPrefab: {fileID: 6931431659471903219, guid: f1bc06f9a2780b6408fc73e1c8bc06e7, type: 3}
   bombPrefab: {fileID: 2987618695811954633, guid: f0a275f7fd613d64891dac5d9a09fc1a, type: 3}
+  markerPrefab: {fileID: 1002327116322393921, guid: 32d46fa4a803d654a9c5c35fa9e23eb2, type: 3}
 --- !u!1 &9031624380205359431
 GameObject:
   m_ObjectHideFlags: 0

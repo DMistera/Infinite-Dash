@@ -15,6 +15,6 @@ public class MenuEvents : MonoBehaviour {
     }
 
     public void Play() {
-        GameStateHolder.Instance.State = GameState.PLAY;
+        GameManager.Instance.State = GameState.PLAY;
     }
 }

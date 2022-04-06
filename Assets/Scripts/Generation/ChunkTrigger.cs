@@ -13,20 +13,20 @@ public class ChunkTrigger : MonoBehaviour {
         chunk = GetComponentInParent<Chunk>();
     }
 
-    public void Start() {
-         //chunk = GetComponentInParent<Chunk>();
-    }
-
     public void OnTriggerEnter2D(Collider2D collider2D) {
-        Player player = collider2D.GetComponent<Player>();
-        if (player != null) {
-            chunk.OnPlayerEnter?.Invoke(player);
+        if(chunk.Ready) {
+            Player player = collider2D.GetComponent<Player>();
+            if (player != null) {
+                chunk.OnPlayerEnter?.Invoke(player);
+            }
         }
     }
     public void OnTriggerExit2D(Collider2D collider2D) {
-        Player player = collider2D.GetComponent<Player>();
-        if (player != null) {
-            chunk.OnPlayerExit?.Invoke(player);
+        if (chunk.Ready) {
+            Player player = collider2D.GetComponent<Player>();
+            if (player != null) {
+                chunk.OnPlayerLeave?.Invoke(player);
+            }
         }
     }
 

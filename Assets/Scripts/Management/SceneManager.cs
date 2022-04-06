@@ -11,7 +11,7 @@ public class SceneManager : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        GameStateHolder.Instance.OnEnter += (state) => {
+        GameManager.Instance.OnStateEnter += (state) => {
 
             ClearOldScenes(state);
 
@@ -40,7 +40,8 @@ public class SceneManager : MonoBehaviour {
     }
 
     private void Load(SceneDescriptor descriptor) {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(descriptor.sceneName, UnityEngine.SceneManagement.LoadSceneMode.Additive);
+        UnityEngine.SceneManagement.LoadSceneParameters parameters = new UnityEngine.SceneManagement.LoadSceneParameters(UnityEngine.SceneManagement.LoadSceneMode.Additive, UnityEngine.SceneManagement.LocalPhysicsMode.Physics2D);
+        UnityEngine.SceneManagement.Scene scene = UnityEngine.SceneManagement.SceneManager.LoadScene(descriptor.sceneName, parameters);
         loadedSceneDescriptors.Add(descriptor);
     }
 

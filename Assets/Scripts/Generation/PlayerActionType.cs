@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 
 public enum PlayerActionType {
-    JUMP, FALL, SLIDE
+    JUMP, FALL, SLIDE, DOUBLE_JUMP
 }
 

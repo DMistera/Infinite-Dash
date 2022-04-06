@@ -29,6 +29,11 @@ public class GameCamera : MonoBehaviour {
         UpdateY(player);
     }
 
+    public void CenterOnPlayer(Player player) {
+        Vector3 playerPosition = player.transform.position;
+        transform.position = new Vector3(playerPosition.x, playerPosition.y, transform.position.z);
+    }
+
     private void UpdateX(Player player) {
         Vector3 position = transform.position;
         position.x = player.transform.position.x + offsetX;

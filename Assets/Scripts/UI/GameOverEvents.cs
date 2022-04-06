@@ -15,11 +15,11 @@ namespace Assets.Scripts.UI {
         }
 
         public void Restart() {
-            GameStateHolder.Instance.State = GameState.PLAY;
+            GameManager.Instance.State = GameState.PLAY;
         }
 
         public void Menu() {
-            GameStateHolder.Instance.State = GameState.MENU;
+            GameManager.Instance.State = GameState.MENU;
         }
     }
 }

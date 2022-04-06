@@ -6,17 +6,16 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class Player : MonoBehaviour {
 
-    public float forwardVelocity = 5f;
-    public float jumpForce = 5f;
+    public float forwardVelocity = 10f;
+    public float jumpForce = 30f;
     public float maxFallVelocity = 10f;
     private new Rigidbody2D rigidbody;
     private bool inAir = false;
     private bool canDoubleJump = true;
     private bool alive = true;
 
-    private Chunk activeChunk;
-    private float lastActiveChunkTime = 0f;
-    private float activeChunkTime = 0f;
+    public Chunk ActiveChunk { get; set; }
+    private float lastChunkX = 0f;
 
     private PlayerMesh mesh;
 
@@ -27,7 +26,10 @@ public class Player : MonoBehaviour {
 
     // Start is called before the first frame update
     public void Start() {
-        Debug.Log("Start!");
+        if(!IsInSimulation()) {
+            GameCamera.Instance.CenterOnPlayer(this);
+        }
+        Physics2D.simulationMode = SimulationMode2D.Script;
     }
 
     // Update is called once per frame
@@ -41,13 +43,19 @@ public class Player : MonoBehaviour {
                 inAir = true;
             }
             SetVelocityX(forwardVelocity);
-            HandleInput();
             if (rigidbody.velocity.y < -50f) {
-                Die();
+                Difficulty cause = Difficulty.Initial(0f);
+                cause.Set(DifficultyType.PLATFORM_SIZE, 1f);
+                if(!canDoubleJump) {
+                    cause.Set(DifficultyType.DOUBLE_JUMP, 1f);
+                }
+                Die(cause);
             }
-            GameCamera.Instance.UpdateForPlayer(this);
-            lastActiveChunkTime = activeChunkTime;
-            activeChunkTime += Time.deltaTime;
+            if(!IsInSimulation()) {
+                GameCamera.Instance.UpdateForPlayer(this);
+                HandleInput();
+            }
+            lastChunkX = GetXInActiveChunk();
         }
         else {
             SetVelocityX(0f);
@@ -55,8 +63,15 @@ public class Player : MonoBehaviour {
         }
     }
 
-    public void HandleInput() {
-        if(GameStateHolder.Instance.State == GameState.MENU) {
+    public void FixedUpdate() {
+        if(!IsInSimulation()) {
+            PhysicsScene2D physicsScene2D = gameObject.scene.GetPhysicsScene2D();
+            physicsScene2D.Simulate(Time.fixedDeltaTime);
+        }
+    }
+
+    private void HandleInput() {
+        if(GameManager.Instance.State == GameState.MENU) {
             HandleAIInput();
         }
         else {
@@ -65,13 +80,20 @@ public class Player : MonoBehaviour {
     }
 
     public void HandleAIInput() {
-        if(activeChunk != null) {
-            foreach (float t in activeChunk.Simulation.JumpTimes) {
-                if (t > lastActiveChunkTime && t < activeChunkTime) {
+        if(ActiveChunk != null) {
+            foreach (float x in ActiveChunk.Simulation.JumpPositions) {
+                if (x > lastChunkX && x <= GetXInActiveChunk()) {
                     OnSpace();
                 }
             }
         }
+    }
+
+    public float GetXInActiveChunk() {
+        if (ActiveChunk == null) {
+            return 0f;
+        }
+        return (transform.position - ActiveChunk.transform.position).x;
     }
 
     public void HandlePlayerInput() {
@@ -93,37 +115,54 @@ public class Player : MonoBehaviour {
 
     public void OnTriggerEnter2D(Collider2D collider2D) {
         if (collider2D.GetComponent<Bomb>() != null) {
-            if (GameStateHolder.Instance.State == GameState.LOADING) {
-                Destroy(collider2D.gameObject);
+            if (IsInSimulation()) {
+                //Destroy(collider2D.gameObject);
+                Vector3 step = collider2D.transform.localPosition - transform.localPosition;
+                ActiveChunk.Grid.MoveToEmpty(collider2D.gameObject, step);
             }
             else {
-                Die();
+                Difficulty cause = Difficulty.Initial(0f);
+                cause.Set(DifficultyType.BOMB_DENSITY, 1f);
+                cause.Set(DifficultyType.BOMB_DENSITY, 1f);
+                Die(cause);
             }
         }
     }
 
     public void SetActiveChunk(Chunk chunk) {
-        activeChunk = chunk;
-        activeChunkTime = 0f;
-        lastActiveChunkTime = 0f;
+        ActiveChunk = chunk;
+        lastChunkX = 0f;
     }
 
-    private void Die() {
-        mesh.Die();
-        alive = false;
-        LeanTween.delayedCall(0.5f, () => {
-            GameStateHolder.Instance.State = GameState.GAME_OVER;
-        });
+    private void Die(Difficulty cause) {
+        if(!IsInSimulation() && GameManager.Instance.State == GameState.PLAY) {
+            mesh.Die();
+            alive = false;
+            if (ActiveChunk != null) {
+                PlayerProfile.Instance.PlayerSkill.DecreaseTo(ActiveChunk.Difficulty, cause);
+            }
+            LeanTween.delayedCall(0.5f, () => {
+                GameManager.Instance.State = GameState.GAME_OVER;
+            });
+        }
     }
 
     public void OnSpace() {
-        if (!inAir) {
+        if (GameManager.Instance.State == GameState.MENU) {
             Jump();
         }
-        else if (canDoubleJump) {
-            Jump();
-            canDoubleJump = false;
+        else {
+            if (!inAir) {
+                Jump();
+            } else if (canDoubleJump) {
+                Jump();
+                canDoubleJump = false;
+            }
         }
+    }
+
+    private bool IsInSimulation() {
+        return transform.root.GetComponent<ChunkLibrary>() != null;
     }
 
     public void SetVelocityX(float v) {
