@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-
-public class Bomb : MonoBehaviour {
+[RequireComponent(typeof(Collider2D))]
+public class Solid : Entity {
 
     // Use this for initialization
     void Start() {

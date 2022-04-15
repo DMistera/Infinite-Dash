@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 45d35c83b32b7b44299639e44f35b444, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: cb06f5d479701ad41bea77df93b9a6e2, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1738386, g: 0.1738386, b: 0.1738386, a: 1}
+  m_IndirectSpecularColor: {r: 0.34264088, g: 0.34290794, b: 0.34264088, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -246,11 +246,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 2320231530827243513, guid: bf5842685b63150489e37eb266da1af2, type: 3}
-  solidPrefab: {fileID: 6931431659471903219, guid: f1bc06f9a2780b6408fc73e1c8bc06e7, type: 3}
-  bombPrefab: {fileID: 2987618695811954633, guid: f0a275f7fd613d64891dac5d9a09fc1a, type: 3}
   markerPrefab: {fileID: 1002327116322393921, guid: 32d46fa4a803d654a9c5c35fa9e23eb2, type: 3}
   chunkPrefab: {fileID: 4681367917807347206, guid: b4d319effd1e13748b361f1cd2ec7b74, type: 3}
-  mark: 1
+  mark: 0
+  chunkGenerationPolicies:
+  - {fileID: -3598195174421734995, guid: 2fded1bec4205114982ce99bdf1e9f1a, type: 3}
+  - {fileID: -8309107226974217348, guid: 41e101ca0132c484b8ff156b3f53e87a, type: 3}
+  - {fileID: -816792310647623482, guid: cd6c22e4087715e4291b67034d0acf31, type: 3}
+  deltaTime: 0.005
 --- !u!4 &447581535
 Transform:
   m_ObjectHideFlags: 0
@@ -389,11 +392,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e76c69e8c0cfd8488be485a226eb242, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  size: 10
-  bufferSize: 2
+  size: 1
+  bufferSize: 3
   dynamicDifficultyRange: 0.05
   chunkPrefab: {fileID: 4681367917807347206, guid: b4d319effd1e13748b361f1cd2ec7b74, type: 3}
-  generationMethod: 0
+  generationMethod: 1
 --- !u!4 &1390566927
 Transform:
   m_ObjectHideFlags: 0
@@ -551,8 +554,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 10
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2

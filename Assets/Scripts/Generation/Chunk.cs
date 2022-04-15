@@ -9,8 +9,9 @@ public class Chunk : MonoBehaviour {
 
     public Action<Player> OnPlayerEnter;
     public Action<Player> OnPlayerLeave;
-    public Simulation Simulation { get; set; }
+    public ChunkSolution Solution { get; set; }
     public Difficulty Difficulty { get; set; }
+    public float Duration { get; set; }
 
     public ChunkTrigger Trigger { get; private set; }
     public Grid Grid { get; private set; }
@@ -18,7 +19,7 @@ public class Chunk : MonoBehaviour {
 
     public Chunk Clone(Transform parent) {
         Chunk chunkClone = Instantiate(this, parent);
-        chunkClone.Simulation = Simulation;
+        chunkClone.Solution = Solution;
         chunkClone.Difficulty = Difficulty;
         chunkClone.Ready = Ready;
         return chunkClone;

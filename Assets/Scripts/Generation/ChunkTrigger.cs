@@ -31,6 +31,7 @@ public class ChunkTrigger : MonoBehaviour {
     }
 
     public void UpdateShape(float width) {
+        
         Collider.size = new Vector2(width, 2000f);
         Collider.offset = new Vector2(width / 2f, 0f);
     }

@@ -14,24 +14,21 @@ public class PlayerActionTimeline {
     }
     public PlayerActionTimeline(Difficulty difficulty) {
         actions = new List<PlayerAction>();
-        actions.Add(new PlayerAction {
-            Value = 5,
+        actions.Add(new SlideAction {
+            Length = 5,
             Type = PlayerActionType.SLIDE,
         });
         PlayerActionType type = NextType(PlayerActionType.SLIDE); ;
         for (int i = 0; i < 10; i++) {
-            actions.Add(new PlayerAction {
-                Value = GenerateValue(type),
-                Type = type,
-            });
+            actions.Add(GenerateNextAction(type));
             type = NextType(type);
         }
     }
 
     public static PlayerActionTimeline First() {
-        PlayerAction firstAction = new PlayerAction() {
+        PlayerAction firstAction = new SlideAction() {
             Type = PlayerActionType.SLIDE,
-            Value = 10
+            Length = 10
         };
         List<PlayerAction> actions = new List<PlayerAction> {
             firstAction
@@ -39,14 +36,36 @@ public class PlayerActionTimeline {
         return new PlayerActionTimeline(actions);
     }
 
-    private int GenerateValue(PlayerActionType type) {
+    private PlayerAction GenerateNextAction(PlayerActionType type) {
+        switch (type) {
+            case PlayerActionType.SLIDE:
+                return new SlideAction {
+                    Length = GenerateLength(),
+                    Type = type
+                };
+            case PlayerActionType.JUMP:
+            case PlayerActionType.DOUBLE_JUMP:
+            case PlayerActionType.FALL:
+                return new AirAction {
+                    LevelDifference = GenerateLevelDifference(type),
+                    Type = type
+                };
+            default:
+                throw new NotImplementedException();
+        }
+    }
+
+    private int GenerateLevelDifference(PlayerActionType type) {
         return type switch {
-            PlayerActionType.JUMP => UnityEngine.Random.Range(-2, 3),
-            PlayerActionType.DOUBLE_JUMP => UnityEngine.Random.Range(-2, 3),
+            PlayerActionType.JUMP => UnityEngine.Random.Range(0, 3),
+            PlayerActionType.DOUBLE_JUMP => UnityEngine.Random.Range(-1, 3),
             PlayerActionType.FALL => UnityEngine.Random.Range(-3, -1),
-            PlayerActionType.SLIDE => UnityEngine.Random.Range(1, 5),
             _ => throw new ArgumentOutOfRangeException(),
         };
+    }
+
+    private int GenerateLength() {
+        return UnityEngine.Random.Range(1, 5);
     }
 
     private float GetMean(PlayerActionType type) {

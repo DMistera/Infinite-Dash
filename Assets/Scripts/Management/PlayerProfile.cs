@@ -23,7 +23,6 @@ public class PlayerProfile : MonoBehaviour {
         }
         set {
             SavePlayerSkill(value);
-            Debug.Log(playerSkill.ToString());
             playerSkill = value;
         }
     }

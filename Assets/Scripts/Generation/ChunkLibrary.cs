@@ -40,7 +40,7 @@ public class ChunkLibrary : MonoBehaviour {
     private IEnumerator Load() {
         for (int i = 0; i < size; i++) {
             chunks[i] = new ChunkEntry() {
-                Chunk = ChunkGenerator.Instance.GenerateByDifficulty(Difficulty.Initial(1f)),
+                Chunk = ChunkGenerator.Instance.GenerateByDifficulty(Difficulty.Random()),
                 UseCount = 0
             };
             OnLoadStep?.Invoke(i);

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 
 public class SimulationState {
+    public Chunk Chunk { get; set; }
+    public Difficulty Difficulty { get; set; }
     public Player Player { get; set; }
     public PlayerAction CurrentAction { get; set; }
     public PlayerAction PreviousAction { get; set; }

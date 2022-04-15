@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,8 @@ public class Player : MonoBehaviour {
     private bool inAir = false;
     private bool canDoubleJump = true;
     private bool alive = true;
+
+    public Action<Collider2D> OnTriggerEnter;
 
     public Chunk ActiveChunk { get; set; }
     private float lastChunkX = 0f;
@@ -45,7 +48,7 @@ public class Player : MonoBehaviour {
             SetVelocityX(forwardVelocity);
             if (rigidbody.velocity.y < -50f) {
                 Difficulty cause = Difficulty.Initial(0f);
-                cause.Set(DifficultyType.PLATFORM_SIZE, 1f);
+                cause.Set(DifficultyType.PLATFORM_LENGTH, 1f);
                 if(!canDoubleJump) {
                     cause.Set(DifficultyType.DOUBLE_JUMP, 1f);
                 }
@@ -81,7 +84,7 @@ public class Player : MonoBehaviour {
 
     public void HandleAIInput() {
         if(ActiveChunk != null) {
-            foreach (float x in ActiveChunk.Simulation.JumpPositions) {
+            foreach (float x in ActiveChunk.Solution.JumpPositions) {
                 if (x > lastChunkX && x <= GetXInActiveChunk()) {
                     OnSpace();
                 }
@@ -114,13 +117,9 @@ public class Player : MonoBehaviour {
     }
 
     public void OnTriggerEnter2D(Collider2D collider2D) {
-        if (collider2D.GetComponent<Bomb>() != null) {
-            if (IsInSimulation()) {
-                //Destroy(collider2D.gameObject);
-                Vector3 step = collider2D.transform.localPosition - transform.localPosition;
-                ActiveChunk.Grid.MoveToEmpty(collider2D.gameObject, step);
-            }
-            else {
+        OnTriggerEnter?.Invoke(collider2D);
+        if (!IsInSimulation()) {
+            if(collider2D.GetComponent<Hazard>() != null) {
                 Difficulty cause = Difficulty.Initial(0f);
                 cause.Set(DifficultyType.BOMB_DENSITY, 1f);
                 cause.Set(DifficultyType.BOMB_DENSITY, 1f);

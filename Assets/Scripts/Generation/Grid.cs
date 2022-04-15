@@ -7,39 +7,47 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour {
 
-    private Dictionary<Vector2Int, GameObject> map = new Dictionary<Vector2Int,GameObject>();
+    private Dictionary<Vector2Int, Entity> map = new Dictionary<Vector2Int, Entity>();
 
-    public GameObject Get(Vector2Int position) {
+    public Entity Get(Vector2Int position) {
         return map[position];
     }
 
-    public GameObject Get(Vector3 position3D) {
+    public Entity Get(Vector3 position3D) {
         position3D = SnapToGrid(position3D);
         return Get(ToVector2Int(position3D));
     }
 
-    public Vector2Int GetPosition(GameObject gameObject) {
-        return ToVector2Int(gameObject.transform.localPosition);
+    public Vector2Int GetPosition(Entity entity) {
+        return ToVector2Int(entity.transform.localPosition);
     }
 
-    public void Set(GameObject gameObject) {
-        Set(gameObject, gameObject.transform.localPosition);
+    public void Set(Entity entity) {
+        Set(entity, entity.transform.localPosition);
     }
 
-    public void Set(GameObject gameObject, Vector3 position3D) {
+    public void Set(Entity entity, Vector3 position3D) {
         position3D = SnapToGrid(position3D);
-        Set(gameObject, ToVector2Int(position3D));
+        Set(entity, ToVector2Int(position3D));
     }
 
-    public void Set(GameObject gameObject, Vector2Int position) {
+    public void Set(Entity entity, Vector2Int position) {
         if (map.ContainsKey(position)) {
-            GameObject.Destroy(map[position]);
+            GameObject.Destroy(map[position].gameObject);
             map.Remove(position);
         }
-        map.Remove(GetPosition(gameObject));
-        gameObject.transform.parent = transform;
-        gameObject.transform.localPosition = ToVector3(position);
-        map[position] = gameObject;
+        map.Remove(GetPosition(entity));
+        entity.transform.parent = transform;
+        entity.transform.localPosition = ToVector3(position);
+        map[position] = entity;
+    }
+
+    public void Destroy(Entity entity) {
+        Vector2Int position = ToVector2Int(entity.transform.localPosition);
+        if (map.ContainsKey(position)) {
+            GameObject.Destroy(map[position].gameObject);
+            map.Remove(position);
+        }
     }
 
     public bool IsEmpty(Vector3 position) {
@@ -52,21 +60,27 @@ public class Grid : MonoBehaviour {
         }
     }
 
-    public void MoveToEmpty(GameObject gameObject, Vector3 step) {
-        Vector2Int position = GetPosition(gameObject);
+    public void MoveToEmpty(Entity entity, Vector3 step) {
+        Vector2Int position = GetPosition(entity);
         if (!map.Remove(position)) {            
             throw new Exception("Object is not in the grid");
         }
-        Set(gameObject, FindEmpty(gameObject.transform.localPosition, step));
+        Set(entity, FindEmpty(entity.transform.localPosition, step));
+    }
+
+    public void ForEach(Action<Entity> action) {
+        foreach (Entity entity in map.Values) {
+            action.Invoke(entity);
+        }
     }
 
     // TODO
-    public void Move(GameObject gameObject, Vector2Int shift) {
-        Vector2Int position = GetPosition(gameObject);
+    public void Move(Entity entity, Vector2Int shift) {
+        Vector2Int position = GetPosition(entity);
         if(!map.Remove(position)) {
             throw new Exception("Object is not in the grid");
         }
-        map[position + shift] = gameObject;
+        map[position + shift] = entity;
     }
 
     private Vector2Int FindEmpty(Vector3 centre, Vector3 step) {
@@ -88,7 +102,7 @@ public class Grid : MonoBehaviour {
         return new Vector3(v.x, v.y, 0f);
     }
 
-    private Vector3 SnapToGrid(Vector3 v) {
+    public static Vector3 SnapToGrid(Vector3 v) {
         v.x = Mathf.Round(v.x);
         v.y = Mathf.Round(v.y);
         return v;

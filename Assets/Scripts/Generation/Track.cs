@@ -12,7 +12,6 @@ public class Track : MonoBehaviour {
     void Start() {
         Instantiate(playerPrefab, transform);
         AddChunk(ChunkLibrary.Instance.FirstChunk);
-        //AddChunk(ChunkLibrary.Instance.GetNext());
     }
 
     void Update() {
@@ -23,6 +22,7 @@ public class Track : MonoBehaviour {
     }
 
     private void AddChunk(Chunk chunk) {
+        Debug.Log(chunk.Difficulty.ToString());
         Chunk chunkClone = chunk.Clone(transform);
         chunkClone.transform.localPosition = endPosition;
         chunkClone.gameObject.SetActive(true);
