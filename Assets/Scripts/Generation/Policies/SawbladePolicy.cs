@@ -33,6 +33,7 @@ public class SawbladePolicy : ChunkGenerationPolicy {
         if (collider2D.GetComponent<Sawblade>() != null) {
             Vector3 step = collider2D.transform.localPosition - player.transform.localPosition;
             chunk.Grid.MoveToEmpty(collider2D.GetComponent<Entity>(), step);
+            chunk.TestPassed = false;
         }
     }
 

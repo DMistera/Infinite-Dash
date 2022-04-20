@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   forwardVelocity: 12
-  jumpForce: 30
+  jumpForce: 25
   maxFallVelocity: 999
 --- !u!61 &5887430817550294766
 BoxCollider2D:

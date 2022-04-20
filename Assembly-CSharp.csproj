@@ -64,6 +64,7 @@
     <Compile Include="Assets\Packages\LeanTween\Framework\LeanTweenExt.cs" />
     <Compile Include="Assets\Scripts\Entities\Sawblade\Sawblade.cs" />
     <Compile Include="Assets\Packages\LeanTween\Framework\LTSeq.cs" />
+    <Compile Include="Assets\Scripts\Generation\Policies\ChainPolicy.cs" />
     <Compile Include="Assets\Scripts\Generation\Track.cs" />
     <Compile Include="Assets\Scripts\Generation\PlayerAction\SlideAction.cs" />
     <Compile Include="Assets\Scripts\UI\LoadingText.cs" />
@@ -76,6 +77,8 @@
     <Compile Include="Assets\Scripts\Management\PlayerPrefsKey.cs" />
     <Compile Include="Assets\Scripts\Generation\SimulationState.cs" />
     <Compile Include="Assets\Scripts\Generation\PlayerAction\AirAction.cs" />
+    <Compile Include="Assets\Scripts\Generation\Policies\CloudPolicy.cs" />
+    <Compile Include="Assets\Scripts\Entities\ParallaxEntity.cs" />
     <Compile Include="Assets\Scripts\Generation\PlayerAction\PlayerActionTimeline.cs" />
     <Compile Include="Assets\Scripts\Management\SceneDescriptor.cs" />
     <Compile Include="Assets\Scripts\Utils\Math.cs" />
@@ -85,6 +88,7 @@
     <Compile Include="Assets\Packages\LeanTween\Framework\LTDescrOptional.cs" />
     <Compile Include="Assets\Scripts\Constants.cs" />
     <Compile Include="Assets\Scripts\Generation\GenerationMethod.cs" />
+    <Compile Include="Assets\Scripts\Generation\Policies\FallTrapPolicy.cs" />
     <Compile Include="Assets\Scripts\Generation\ChunkLibrary.cs" />
     <Compile Include="Assets\Scripts\Generation\Policies\SawbladePolicy.cs" />
     <Compile Include="Assets\Packages\LeanTween\Framework\LeanAudio.cs" />
@@ -100,13 +104,16 @@
     <Compile Include="Assets\Scripts\Generation\ChunkGenerator.cs" />
     <Compile Include="Assets\Scripts\Entities\Sawblade\SawbladeVariant.cs" />
     <Compile Include="Assets\Packages\LeanTween\Framework\LeanTest.cs" />
+    <Compile Include="Assets\Scripts\Entities\Vine.cs" />
     <Compile Include="Assets\Scripts\Generation\ChunkSolution.cs" />
     <Compile Include="Assets\Scripts\Entities\Sawblade\SawbladeMesh.cs" />
     <Compile Include="Assets\Scripts\Generation\PlayerSkill.cs" />
+    <Compile Include="Assets\Scripts\Entities\Cloud.cs" />
     <Compile Include="Assets\Scripts\Entities\Solid.cs" />
     <Compile Include="Assets\Scripts\Generation\PlayerAction\PlayerActionType.cs" />
     <Compile Include="Assets\Scripts\Management\GameState.cs" />
     <Compile Include="Assets\Scripts\Generation\Policies\ChunkGenerationPolicy.cs" />
+    <Compile Include="Assets\Scripts\Generation\Policies\VinePolicy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Packages\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -759,8 +766,8 @@
     <Reference Include="VSSettingsProvider">
       <HintPath>Library\ScriptAssemblies\VSSettingsProvider.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Runtime">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Flow">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Flow.dll</HintPath>
@@ -779,6 +786,9 @@
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Core.Runtime">
+      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Core">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Core.dll</HintPath>

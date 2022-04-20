@@ -7,19 +7,19 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour {
 
-    private Dictionary<Vector2Int, Entity> map = new Dictionary<Vector2Int, Entity>();
+    private Dictionary<Vector3Int, Entity> map = new Dictionary<Vector3Int, Entity>();
 
-    public Entity Get(Vector2Int position) {
+    public Entity Get(Vector3Int position) {
         return map[position];
     }
 
     public Entity Get(Vector3 position3D) {
         position3D = SnapToGrid(position3D);
-        return Get(ToVector2Int(position3D));
+        return Get(ToVector3Int(position3D));
     }
 
-    public Vector2Int GetPosition(Entity entity) {
-        return ToVector2Int(entity.transform.localPosition);
+    public Vector3Int GetPosition(Entity entity) {
+        return ToVector3Int(entity.transform.localPosition);
     }
 
     public void Set(Entity entity) {
@@ -28,10 +28,10 @@ public class Grid : MonoBehaviour {
 
     public void Set(Entity entity, Vector3 position3D) {
         position3D = SnapToGrid(position3D);
-        Set(entity, ToVector2Int(position3D));
+        Set(entity, ToVector3Int(position3D));
     }
 
-    public void Set(Entity entity, Vector2Int position) {
+    public void Set(Entity entity, Vector3Int position) {
         if (map.ContainsKey(position)) {
             GameObject.Destroy(map[position].gameObject);
             map.Remove(position);
@@ -43,7 +43,7 @@ public class Grid : MonoBehaviour {
     }
 
     public void Destroy(Entity entity) {
-        Vector2Int position = ToVector2Int(entity.transform.localPosition);
+        Vector3Int position = ToVector3Int(entity.transform.localPosition);
         if (map.ContainsKey(position)) {
             GameObject.Destroy(map[position].gameObject);
             map.Remove(position);
@@ -61,32 +61,32 @@ public class Grid : MonoBehaviour {
     }
 
     public void MoveToEmpty(Entity entity, Vector3 step) {
-        Vector2Int position = GetPosition(entity);
+        Vector3Int position = GetPosition(entity);
         if (!map.Remove(position)) {            
             throw new Exception("Object is not in the grid");
         }
         Set(entity, FindEmpty(entity.transform.localPosition, step));
     }
 
-    public void ForEach(Action<Entity> action) {
-        foreach (Entity entity in map.Values) {
-            action.Invoke(entity);
+    public void ForEach(Action<Vector3Int, Entity> action) {
+        foreach (KeyValuePair<Vector3Int, Entity> entity in map) {
+            action.Invoke(entity.Key, entity.Value);
         }
     }
 
     // TODO
-    public void Move(Entity entity, Vector2Int shift) {
-        Vector2Int position = GetPosition(entity);
+    public void Move(Entity entity, Vector3Int shift) {
+        Vector3Int position = GetPosition(entity);
         if(!map.Remove(position)) {
             throw new Exception("Object is not in the grid");
         }
         map[position + shift] = entity;
     }
 
-    private Vector2Int FindEmpty(Vector3 centre, Vector3 step) {
-        Vector2Int original = ToVector2Int(centre);
+    private Vector3Int FindEmpty(Vector3 centre, Vector3 step) {
+        Vector3Int original = ToVector3Int(centre);
         while (true) {
-            Vector2Int position = ToVector2Int(centre);
+            Vector3Int position = ToVector3Int(centre);
             if (!map.ContainsKey(position) && position != original) {
                 return position;
             }
@@ -94,11 +94,11 @@ public class Grid : MonoBehaviour {
         }
     }
 
-    private Vector2Int ToVector2Int(Vector3 v) {
-        return new Vector2Int(Convert.ToInt32(v.x), Convert.ToInt32(v.y));
+    private Vector3Int ToVector3Int(Vector3 v) {
+        return new Vector3Int(Convert.ToInt32(v.x), Convert.ToInt32(v.y), Convert.ToInt32(v.z));
     }
 
-    private Vector3 ToVector3(Vector2Int v) {
+    private Vector3 ToVector3(Vector3Int v) {
         return new Vector3(v.x, v.y, 0f);
     }
 

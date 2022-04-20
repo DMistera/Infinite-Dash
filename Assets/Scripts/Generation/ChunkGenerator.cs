@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -67,9 +68,11 @@ public class ChunkGenerator : MonoBehaviour {
             Difficulty = difficulty
         };
         ChunkSolution solution = new ChunkSolution();
-        foreach (PlayerAction action in playerActionTimeline.actions) {
+        for(int i = 0; i < playerActionTimeline.actions.Count; i++) {
+            PlayerAction action = playerActionTimeline.actions[i];
             state.Steps = 0;
             state.CurrentAction = action;
+            state.NextAction = i + 1 >= playerActionTimeline.actions.Count ? null : playerActionTimeline.actions[i + 1];
             state.ActionDeltaY = 0;
             foreach (ChunkGenerationPolicy policy in chunkGenerationPolicies) {
                 policy.ActionEnter(state);
@@ -117,8 +120,12 @@ public class ChunkGenerator : MonoBehaviour {
         chunk.Trigger.UpdateShape(chunk.EndPosition.x);
         chunk.Solution = solution;
         EnableEntities(chunk);
-        CleanUpOutsideBounds(chunk);
-        RunTest(chunk); // clean up bombs
+        CleanOutsideBounds(chunk);
+        while(!chunk.TestPassed) {
+            chunk.TestPassed = true;
+            RunTest(chunk);
+        }
+        CleanOutsideBounds(chunk);
         chunk.gameObject.SetActive(false);
         chunk.Ready = true;
         callback?.Invoke(chunk);
@@ -172,18 +179,30 @@ public class ChunkGenerator : MonoBehaviour {
     }
 
     private void EnableEntities(Chunk chunk) {
-        chunk.Grid.ForEach(x => {
-            x.gameObject.SetActive(true);
+        chunk.Grid.ForEach((key, entity) => {
+            entity.gameObject.SetActive(true);
         });
     }
 
-    private void CleanUpOutsideBounds(Chunk chunk) {
+    private void CleanOutsideBounds(Chunk chunk) {
+        List<Entity> toDelete = new List<Entity>();
+        chunk.Grid.ForEach((key, entity) => {
+            if(key.x >= (int)chunk.EndPosition.x || key.x < 0) {
+                toDelete.Add(entity);
+            }
+        });
+        foreach (Entity entity in toDelete) {
+            chunk.Grid.Destroy(entity);
+        }
+    }
+
+    /*private void CleanOutsideBounds(Chunk chunk) {
         foreach (Transform t in chunk.transform) {
             if (!chunk.Trigger.Collider.bounds.Contains(t.position)) {
                 Destroy(t.gameObject);
             }
         }
-    }
+    }*/
 
     private PhysicsScene2D GetPhysicsScene2D() {
         return UnityEngine.SceneManagement.SceneManager.GetSceneByName("Global").GetPhysicsScene2D();

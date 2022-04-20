@@ -59,13 +59,13 @@ public class PlayerActionTimeline {
         return type switch {
             PlayerActionType.JUMP => UnityEngine.Random.Range(0, 3),
             PlayerActionType.DOUBLE_JUMP => UnityEngine.Random.Range(-1, 3),
-            PlayerActionType.FALL => UnityEngine.Random.Range(-3, -1),
+            PlayerActionType.FALL => UnityEngine.Random.Range(-3, 0),
             _ => throw new ArgumentOutOfRangeException(),
         };
     }
 
     private int GenerateLength() {
-        return UnityEngine.Random.Range(1, 5);
+        return UnityEngine.Random.Range(1, 6);
     }
 
     private float GetMean(PlayerActionType type) {

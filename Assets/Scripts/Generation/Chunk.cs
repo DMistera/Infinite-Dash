@@ -16,6 +16,7 @@ public class Chunk : MonoBehaviour {
     public ChunkTrigger Trigger { get; private set; }
     public Grid Grid { get; private set; }
     public bool Ready { get; set; } = false;
+    public bool TestPassed { get; set; } = false;
 
     public Chunk Clone(Transform parent) {
         Chunk chunkClone = Instantiate(this, parent);

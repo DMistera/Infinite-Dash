@@ -11,6 +11,7 @@ public class SimulationState {
     public Player Player { get; set; }
     public PlayerAction CurrentAction { get; set; }
     public PlayerAction PreviousAction { get; set; }
+    public PlayerAction NextAction { get; set; }
     public int Steps { get; set; } = 0;
     public float ActionDeltaY { get; set; } = 0f;
 }

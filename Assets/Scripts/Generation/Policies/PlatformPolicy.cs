@@ -12,19 +12,26 @@ public class PlatformPolicy : ChunkGenerationPolicy {
 
     public override void ActionEnter(SimulationState state) {
         if (state.CurrentAction.Type == PlayerActionType.SLIDE) {
-            SpawnSolid(state.Chunk, state.Player, blockPrefab);
+            SpawnSolid(state, 1);
             if(state.PreviousAction != null) {
-                SpawnExtension(state);
+                SpawnExtension(state, true);
             }
         }
     }
 
     public override void ActionExit(SimulationState state) {
+        if (state.CurrentAction.Type == PlayerActionType.SLIDE && state.NextAction != null && state.NextAction.Type == PlayerActionType.JUMP) {
+            SpawnExtension(state, false);
+        }
     }
 
     public override void Step(SimulationState state) {
         if (state.CurrentAction.Type == PlayerActionType.SLIDE) {
-            SpawnSolid(state.Chunk, state.Player, blockPrefab);
+            int lenght = (state.CurrentAction as SlideAction).Length;
+            int h = lenght - Mathf.Abs(lenght / 2 - state.Steps);
+            h += UnityEngine.Random.Range(-2, 2);
+            h = Mathf.Clamp(h, 1, 8);
+            SpawnSolid(state, h);
         }
     }
 
@@ -32,24 +39,27 @@ public class PlatformPolicy : ChunkGenerationPolicy {
         
     }
 
-    private void SpawnExtension(SimulationState state) {
-        float max = (1f - state.Difficulty.Get(DifficultyType.PLATFORM_LENGTH)) * 4f;
+    private void SpawnExtension(SimulationState state, bool reverse) {
+        float max = (1f - state.Difficulty.Get(DifficultyType.PLATFORM_LENGTH)) * 3f;
         int length = Mathf.RoundToInt(UnityEngine.Random.Range(0f, max));
 
         for (int i = 0; i < length; i++) {
             Solid solid = Instantiate(platformPrefab, state.Chunk.transform);
             Vector3 v = state.Player.transform.localPosition;
+            int mul = reverse ? -1 : 1;
             v.y -= Constants.GRID_SIZE;
-            v.x -= i + 1;
+            v.x += (i + 1) * mul;
             state.Chunk.Grid.Set(solid, v);
         }
     }
 
-    private void SpawnSolid(Chunk chunk, Player player, Solid solidPrefab) {
-        Solid solid = Instantiate(solidPrefab, chunk.transform);
-        Vector3 v = player.transform.localPosition;
-        v.y -= Constants.GRID_SIZE;
-        chunk.Grid.Set(solid, v);
+    private void SpawnSolid(SimulationState state, int height) {
+        Vector3 v = state.Player.transform.localPosition;
+        for(int i = 0; i < height; i++) {
+            Solid solid = Instantiate(blockPrefab, state.Chunk.transform);
+            v.y -= Constants.GRID_SIZE;
+            state.Chunk.Grid.Set(solid, v);
+        }
     }
 }
 

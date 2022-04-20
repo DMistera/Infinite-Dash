@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 
@@ -17,6 +18,8 @@ public class GameCamera : MonoBehaviour {
     public float offsetX = 5f;
     public float thresholdY = 5f;
 
+    public Action OnUpdatePosition;
+
     // Use this for initialization
     void Start() {
     }
@@ -27,6 +30,7 @@ public class GameCamera : MonoBehaviour {
     public void UpdateForPlayer(Player player) {
         UpdateX(player);
         UpdateY(player);
+        OnUpdatePosition?.Invoke();
     }
 
     public void CenterOnPlayer(Player player) {
