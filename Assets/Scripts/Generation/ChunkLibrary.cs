@@ -15,20 +15,20 @@ public class ChunkLibrary : MonoBehaviour {
     }
     private static ChunkLibrary instance;
 
-    public int size = 100;
+    public int librarySize = 100;
     public int bufferSize = 2;
     public float dynamicDifficultyRange = 0.1f;
     public Chunk chunkPrefab;
     public GenerationMethod generationMethod;
 
     public Chunk FirstChunk { get; private set; }
-    public Action<int> OnLoadStep;
-    private ChunkEntry[] chunks;
+    public Action<int, int> OnLoadStep;
+    private LibraryEntry[] library;
     private Chunk[] buffer;
     private bool refillBufferLock = false;
 
     public void Awake() {
-        chunks = new ChunkEntry[size];
+        library = new LibraryEntry[librarySize];
         buffer = new Chunk[bufferSize];
     }
 
@@ -38,39 +38,37 @@ public class ChunkLibrary : MonoBehaviour {
     }
 
     private IEnumerator Load() {
-        for (int i = 0; i < size; i++) {
-            chunks[i] = new ChunkEntry() {
-                Chunk = ChunkGenerator.Instance.GenerateByDifficulty(Difficulty.Random()),
-                UseCount = 0
-            };
-            OnLoadStep?.Invoke(i);
-            yield return null;
+        if(generationMethod == GenerationMethod.STATIC) {
+            yield return LoadLibrary();
         }
-        LoadBuffer();
+        else if(generationMethod == GenerationMethod.DYNAMIC) {
+            yield return LoadBuffer();
+        }
         GameManager.Instance.State = GameState.MENU;
     }
 
-    public Chunk GetNext() {
-        switch (generationMethod) {
-            case GenerationMethod.STATIC:
-                return TakeFromLibrary();
-            case GenerationMethod.DYNAMIC:
-                return TakeFromBuffer();
-            default:
-                throw new NotImplementedException();
-        }
+    public Chunk GetNext(Player player) {
+        Debug.Log("Want: " + player.Skill.Rank());
+        return generationMethod switch {
+            GenerationMethod.STATIC => TakeFromLibrary(player),
+            GenerationMethod.DYNAMIC => TakeFromBuffer(player),
+            _ => throw new NotImplementedException(),
+        };
     }
 
-    private Chunk TakeFromLibrary() {
+    private Chunk TakeFromLibrary(Player player) {
         float minDiff = float.MaxValue;
         int minCount = int.MaxValue;
-        ChunkEntry chunkEntry = chunks[0];
-        foreach (ChunkEntry entry in chunks) {
+        LibraryEntry chunkEntry = null;
+        foreach (LibraryEntry entry in library) {
+            if(entry == null) continue;
+            float diff = player.Skill.Difference(entry.Chunk.Difficulty);
             if (entry.UseCount < minCount) {
                 minCount = entry.UseCount;
+                minDiff = diff;
+                chunkEntry = entry;
             }
             if (entry.UseCount <= minCount) {
-                float diff = PlayerProfile.Instance.PlayerSkill.Difference(entry.Chunk.Difficulty);
                 if (diff < minDiff) {
                     minDiff = diff;
                     chunkEntry = entry;
@@ -90,21 +88,69 @@ public class ChunkLibrary : MonoBehaviour {
         }
     }
 
-    public void LoadBuffer() {
-        ClearBuffer();
-        PlayerSkill skill = PlayerProfile.Instance.PlayerSkill;
-        for (int i = 0; i < bufferSize; i++) {
-            buffer[i] = ChunkGenerator.Instance.GenerateByDifficulty(skill.MakeSimilar(dynamicDifficultyRange));
+    private void AddChunkToLibrary(Player player, Chunk chunk) {
+        int index = WorstLibraryEntryIndex(player);
+        if(library[index] != null) {
+            Destroy(library[index].Chunk.gameObject);
+        }
+        library[index] = new LibraryEntry(chunk);
+    }
+
+    private int WorstLibraryEntryIndex(Player player) {
+        for (int i = 0; i < librarySize; i++) {
+            if (library[i] == null) {
+                return i;
+            }
+        }
+
+        float maxDiff = 0;
+        int maxCount = 0;
+        int index = 0;
+        for (int i = 0; i < librarySize; i++) {
+            LibraryEntry entry = library[i];
+            if (entry == null) continue;
+            float diff = player.Skill.Difference(entry.Chunk.Difficulty);
+            if (entry.UseCount > maxCount) {
+                maxCount = entry.UseCount;
+                maxDiff = diff;
+                index = i;
+            }
+            if (entry.UseCount >= maxCount) {
+                if (diff > maxDiff) {
+                    maxDiff = diff;
+                    index = i;
+                }
+            }
+        }
+        return index;
+    }
+
+    private IEnumerator LoadLibrary() {
+        for (int i = 0; i < librarySize; i++) {
+            Chunk chunk = ChunkGenerator.Instance.GenerateByDifficulty(Difficulty.Random());
+            library[i] = new LibraryEntry(chunk);
+            OnLoadStep?.Invoke(i, librarySize);
+            yield return null;
         }
     }
 
-    private void RefillBuffer() {
+    private IEnumerator LoadBuffer() {
+        ClearBuffer();
+        PlayerSkill skill = PlayerProfile.Instance.PlayerSkill;
+        for (int i = 0; i < bufferSize; i++) {
+            OnLoadStep?.Invoke(i, bufferSize);
+            buffer[i] = ChunkGenerator.Instance.GenerateByDifficulty(skill.MakeSimilar(dynamicDifficultyRange));
+            yield return null;
+        }
+    }
+
+    private void RefillBuffer(Player player) {
         if (IsBufferFull()) {
             return;
         }
         if (!refillBufferLock) {
             refillBufferLock = true;
-            PlayerSkill skill = PlayerProfile.Instance.PlayerSkill;
+            PlayerSkill skill = player.Skill;
             ChunkGenerator.Instance.GenerateByDifficultyAsync(skill.MakeSimilar(dynamicDifficultyRange), (chunk) => {
                 for (int i = 0; i < bufferSize; i++) {
                     if (buffer[i] == null) {
@@ -113,7 +159,7 @@ public class ChunkLibrary : MonoBehaviour {
                     }
                 }
                 refillBufferLock = false;
-                RefillBuffer();
+                RefillBuffer(player);
             });
         }
     }
@@ -127,20 +173,30 @@ public class ChunkLibrary : MonoBehaviour {
         return true;
     }
 
-    private Chunk TakeFromBuffer() {
+    private Chunk TakeFromBuffer(Player player) {
         Chunk result = buffer[0];
         for (int i = 0; i < bufferSize - 1; i++) {
             buffer[i] = buffer[i + 1];
         }
         buffer[bufferSize - 1] = null;
         if (result == null) {
-            result = TakeFromLibrary();
+            result = TakeFromLibrary(player);
         }
-        RefillBuffer();
+        else {
+            Debug.Log("Generated chunk!");
+            AddChunkToLibrary(player, result);
+        }
+        RefillBuffer(player);
+        Debug.Log("Got: " + result.Difficulty.Rank());
         return result;
     }
 
-    private class ChunkEntry {
+    private class LibraryEntry {
+        public LibraryEntry(Chunk chunk) {
+            Chunk = chunk;
+            UseCount = 0;
+        }
+
         public Chunk Chunk { get; set; }
         public int UseCount { get; set; }
     }

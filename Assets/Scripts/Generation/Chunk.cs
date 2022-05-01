@@ -37,8 +37,10 @@ public class Chunk : MonoBehaviour {
             player.SetActiveChunk(this);
         };
         OnPlayerLeave += (player) => {
-            if(GameManager.Instance.State == GameState.PLAY) {
-                PlayerProfile.Instance.PlayerSkill.IncreaseTo(Difficulty);
+            player.Score++;
+            player.Skill.IncreaseTo(Difficulty);
+            if (player.saveSkillChanges) {
+                player.Skill.Save();
             }
         };
     }

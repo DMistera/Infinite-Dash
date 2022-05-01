@@ -99,7 +99,7 @@ public class Grid : MonoBehaviour {
     }
 
     private Vector3 ToVector3(Vector3Int v) {
-        return new Vector3(v.x, v.y, 0f);
+        return new Vector3(v.x, v.y, v.z);
     }
 
     public static Vector3 SnapToGrid(Vector3 v) {

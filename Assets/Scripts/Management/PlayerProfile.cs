@@ -28,14 +28,7 @@ public class PlayerProfile : MonoBehaviour {
     }
     private PlayerSkill playerSkill;
 
-    public PlayerSkill PreviousPlayerSkill { get; private set; }
-
     public void Update() {
-        GameManager.Instance.OnStateEnter += (GameState gameState) => {
-            if (gameState == GameState.PLAY) {
-                PreviousPlayerSkill = new PlayerSkill(PlayerSkill);
-            }
-        };
     }
 
     private PlayerSkill InitializePlayerSkill() {

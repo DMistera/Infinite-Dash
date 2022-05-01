@@ -159,9 +159,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   variants:
-  - size: 1
+  - size: 0.9
     sprite: {fileID: 21300000, guid: e37684eb0bfed3e4eb09ea52749f2944, type: 3}
-  - size: 1.5
+  - size: 1.4
     sprite: {fileID: 21300000, guid: b5d89202311370c4db5a72bddca4c55c, type: 3}
-  - size: 2
+  - size: 1.9
     sprite: {fileID: 21300000, guid: 75d8d5a8b74e70649871e3840f0a5be7, type: 3}

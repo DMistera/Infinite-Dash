@@ -9,6 +9,7 @@ public class PlayerSkill : Difficulty {
 
     private readonly float INCREASE_RATE = 0.5f;
     private readonly float DECREASE_RATE = 1f;
+    private List<PlayerSkill> history = new List<PlayerSkill>();
 
     public PlayerSkill(string json) : base(json) {
     }
@@ -16,7 +17,15 @@ public class PlayerSkill : Difficulty {
     public PlayerSkill(PlayerSkill other) : base(other) {
     }
 
+    public PlayerSkill(Difficulty diff) : base(diff) {
+    }
+
+    public PlayerSkill Previous() {
+        return history[history.Count - 1];
+    }
+
     public void IncreaseTo(Difficulty difficulty) {
+        history.Add(new PlayerSkill(this));
         foreach (DifficultyType type in Enum.GetValues(typeof(DifficultyType))) {
             float v = difficulty.Get(type);
             if(v > map[type]) {
@@ -24,10 +33,10 @@ public class PlayerSkill : Difficulty {
                 map[type] += diff * INCREASE_RATE;
             }
         }
-        Save();
     }
 
     public void DecreaseTo(Difficulty difficulty, Difficulty cause) {
+        history.Add(new PlayerSkill(this));
         foreach (DifficultyType type in Enum.GetValues(typeof(DifficultyType))) {
             float v = difficulty.Get(type);
             if (v < map[type]) {
@@ -35,21 +44,10 @@ public class PlayerSkill : Difficulty {
                 map[type] -= diff * DECREASE_RATE;
             }
         }
-        Save();
     }
 
     public void Update() {
 
-    }
-
-    public float Rank() {
-        float sum = 0;
-        float count = 0;
-        foreach (float v in map.Values) {
-            sum += v;
-            count++;
-        }
-        return sum / count;
     }
 
     public void Save() {

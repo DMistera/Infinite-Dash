@@ -123,7 +123,10 @@ public class ChunkGenerator : MonoBehaviour {
         CleanOutsideBounds(chunk);
         while(!chunk.TestPassed) {
             chunk.TestPassed = true;
-            RunTest(chunk);
+            IEnumerator e = RunTest(chunk);
+            while (e.MoveNext()) {
+                yield return null;
+            }
         }
         CleanOutsideBounds(chunk);
         chunk.gameObject.SetActive(false);
@@ -131,7 +134,7 @@ public class ChunkGenerator : MonoBehaviour {
         callback?.Invoke(chunk);
     }
 
-    private void RunTest(Chunk chunk) {
+    private IEnumerator RunTest(Chunk chunk) {
         PhysicsScene2D physicsScene2D = GetPhysicsScene2D();
         Physics2D.simulationMode = SimulationMode2D.Script;
         Player player = Instantiate(playerPrefab, chunk.transform);
@@ -160,6 +163,7 @@ public class ChunkGenerator : MonoBehaviour {
                 marker.transform.localPosition = player.transform.localPosition;
             }
             physicsScene2D.Simulate(deltaTime);
+            yield return null;
         }
         Destroy(player.gameObject);
     }

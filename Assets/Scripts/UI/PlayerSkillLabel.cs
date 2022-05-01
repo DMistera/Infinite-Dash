@@ -33,6 +33,7 @@ public class PlayerSkillLabel : MonoBehaviour {
     }
 
     private float Diff() {
-        return PlayerProfile.Instance.PlayerSkill.Rank() - PlayerProfile.Instance.PreviousPlayerSkill.Rank();
+        PlayerSkill skill = PlayerProfile.Instance.PlayerSkill;
+        return skill.Rank() - skill.Previous().Rank();
     }
 }

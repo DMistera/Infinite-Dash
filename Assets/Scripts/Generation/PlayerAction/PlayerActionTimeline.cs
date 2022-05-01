@@ -13,11 +13,12 @@ public class PlayerActionTimeline {
         this.actions = actions;
     }
     public PlayerActionTimeline(Difficulty difficulty) {
-        actions = new List<PlayerAction>();
-        actions.Add(new SlideAction {
-            Length = 5,
-            Type = PlayerActionType.SLIDE,
-        });
+        actions = new List<PlayerAction> {
+            new SlideAction {
+                Length = 5,
+                Type = PlayerActionType.SLIDE,
+            }
+        };
         PlayerActionType type = NextType(PlayerActionType.SLIDE); ;
         for (int i = 0; i < 10; i++) {
             actions.Add(GenerateNextAction(type));

@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\Generation\PlayerAction\SlideAction.cs" />
     <Compile Include="Assets\Scripts\UI\LoadingText.cs" />
     <Compile Include="Assets\Scripts\UI\MenuEvents.cs" />
+    <Compile Include="Assets\Scripts\Entities\Player\PlaySpeed.cs" />
     <Compile Include="Assets\Scripts\UI\PlayerSkillLabel.cs" />
     <Compile Include="Assets\Scripts\UI\GameOverEvents.cs" />
     <Compile Include="Assets\Scripts\Entities\Spike.cs" />
@@ -78,9 +79,11 @@
     <Compile Include="Assets\Scripts\Generation\SimulationState.cs" />
     <Compile Include="Assets\Scripts\Generation\PlayerAction\AirAction.cs" />
     <Compile Include="Assets\Scripts\Generation\Policies\CloudPolicy.cs" />
+    <Compile Include="Assets\Scripts\Entities\Player\Controller\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Entities\ParallaxEntity.cs" />
     <Compile Include="Assets\Scripts\Generation\PlayerAction\PlayerActionTimeline.cs" />
     <Compile Include="Assets\Scripts\Management\SceneDescriptor.cs" />
+    <Compile Include="Assets\Scripts\Entities\Player\Controller\AIController.cs" />
     <Compile Include="Assets\Scripts\Utils\Math.cs" />
     <Compile Include="Assets\Scripts\Entities\Hazard.cs" />
     <Compile Include="Assets\Scripts\Management\PlayerProfile.cs" />
@@ -104,7 +107,8 @@
     <Compile Include="Assets\Scripts\Generation\ChunkGenerator.cs" />
     <Compile Include="Assets\Scripts\Entities\Sawblade\SawbladeVariant.cs" />
     <Compile Include="Assets\Packages\LeanTween\Framework\LeanTest.cs" />
-    <Compile Include="Assets\Scripts\Entities\Vine.cs" />
+    <Compile Include="Assets\Scripts\Entities\Player\Controller\HumanController.cs" />
+    <Compile Include="Assets\Scripts\Entities\VineMesh.cs" />
     <Compile Include="Assets\Scripts\Generation\ChunkSolution.cs" />
     <Compile Include="Assets\Scripts\Entities\Sawblade\SawbladeMesh.cs" />
     <Compile Include="Assets\Scripts\Generation\PlayerSkill.cs" />
@@ -114,6 +118,11 @@
     <Compile Include="Assets\Scripts\Management\GameState.cs" />
     <Compile Include="Assets\Scripts\Generation\Policies\ChunkGenerationPolicy.cs" />
     <Compile Include="Assets\Scripts\Generation\Policies\VinePolicy.cs" />
+    <Compile Include="Assets\Scripts\Entities\Player\Types\PlayPlayer.cs" />
+    <Compile Include="Assets\Scripts\Entities\Player\Types\RepeatablePlayer.cs" />
+    <Compile Include="Assets\Scripts\Test\Tester.cs" />
+    <Compile Include="Assets\Scripts\Test\PlayerHistoryEntry.cs" />
+    <Compile Include="Assets\Scripts\Test\PlayerHistory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Packages\TextMesh Pro\Shaders\TMPro.cginc" />

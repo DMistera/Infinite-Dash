@@ -18,7 +18,9 @@ public class ParallaxEntity : Entity {
     }
 
     public void OnDestroy() {
-        GameCamera.Instance.OnUpdatePosition -= UpdatePosition;
+        if (GameCamera.Instance != null) {
+            GameCamera.Instance.OnUpdatePosition -= UpdatePosition;
+        }
     }
 
     private void UpdatePosition() {

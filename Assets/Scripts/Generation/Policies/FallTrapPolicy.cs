@@ -10,24 +10,27 @@ public class FallTrapPolicy : ChunkGenerationPolicy {
     public Spike spikePrefab;
     public Solid blockPrefab;
     public Entity chainPrefab;
+    int counter = 0;
 
     public override void ActionEnter(SimulationState state) {
         if (state.CurrentAction.Type == PlayerActionType.FALL) {
-            SpawnTrap(state);
-            SpawnChain(state);
+            counter = 0;
         }
     }
 
     public override void ActionExit(SimulationState state) {
         if (state.CurrentAction.Type == PlayerActionType.FALL) {
-            SpawnTrap(state);
-            SpawnChain(state);
+            SpawnChain(state, -1);
         }
     }
 
     public override void Step(SimulationState state) {
         if(state.CurrentAction.Type == PlayerActionType.FALL) {
+            if (counter == 0) {
+                SpawnChain(state);
+            }
             SpawnTrap(state);
+            counter++;
         }
     }
 
@@ -45,10 +48,11 @@ public class FallTrapPolicy : ChunkGenerationPolicy {
         SpawnEntity(state.Chunk, blockPrefab, v);
     }
 
-    private void SpawnChain(SimulationState state) {
+    private void SpawnChain(SimulationState state, int dx = 0) {
         Vector3 v = state.Player.transform.localPosition;
         v.y -= state.ActionDeltaY;
         v.y += 4;
+        v.x += dx;
         SpawnEntity(state.Chunk, chainPrefab, v);
     }
 }

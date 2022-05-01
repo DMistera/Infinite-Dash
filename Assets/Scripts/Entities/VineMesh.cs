@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Vine : Entity {
+public class VineMesh : MonoBehaviour {
 
     public Sprite[] sprites;
 

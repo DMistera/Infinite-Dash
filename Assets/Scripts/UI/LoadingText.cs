@@ -14,8 +14,8 @@ public class LoadingText : MonoBehaviour {
     // Use this for initialization
     void Start() {
         text.text = prefix;
-        ChunkLibrary.Instance.OnLoadStep += (step) => {
-            text.text = prefix + " (" + (step + 1) + "/" + ChunkLibrary.Instance.size + ")";
+        ChunkLibrary.Instance.OnLoadStep += (step, max) => {
+            text.text = prefix + " (" + (step + 1) + "/" + max + ")";
         };
     }
 }

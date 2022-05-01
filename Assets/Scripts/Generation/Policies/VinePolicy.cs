@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class VinePolicy : ChunkGenerationPolicy {
 
-    public Vine vinePrefab;
+    public Entity vinePrefab;
     public float vineDensity = 0.1f;
     public override void ActionEnter(SimulationState state) {
     }

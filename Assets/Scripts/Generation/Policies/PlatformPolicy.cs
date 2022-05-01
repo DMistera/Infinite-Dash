@@ -60,6 +60,11 @@ public class PlatformPolicy : ChunkGenerationPolicy {
             v.y -= Constants.GRID_SIZE;
             state.Chunk.Grid.Set(solid, v);
         }
+        v = state.Player.transform.localPosition;
+        Vector3 snapped = Grid.SnapToGrid(v);
+        v.y = snapped.y;
+        state.Player.transform.localPosition = v;
+        state.Player.SetVelocityY(0f);
     }
 }
 

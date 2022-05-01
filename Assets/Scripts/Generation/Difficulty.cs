@@ -43,6 +43,16 @@ public class Difficulty {
         return difficulty;
     }
 
+    public float Rank() {
+        float sum = 0;
+        float count = 0;
+        foreach (float v in map.Values) {
+            sum += v;
+            count++;
+        }
+        return sum / count;
+    }
+
     public override string ToString() {
         return JsonConvert.SerializeObject(map);
     }

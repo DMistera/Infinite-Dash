@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-public enum GameState {
-    PLAY, LOADING, MENU, GAME_OVER, TEST
+public enum PlaySpeed {
+    REAL_TIME, FASTEST
 }
 
