@@ -6,15 +6,19 @@ using System.Threading.Tasks;
 
 
 public class PlayerHistoryEntry {
-    public PlayerSkill Skill { get; set; }
-    public int Score;
+    public PlayerSkill EntrySkill { get; set; }
+    public PlayerSkill HighestSkill { get; set; }
+    public PlayerSkill FinalSkill { get; set; }
+    public int Score { get; set; }
 
     public float[] GetValues() {
         List<float> values = new List<float>();
         foreach (DifficultyType type in Enum.GetValues(typeof(DifficultyType))) {
-            values.Add(Skill.Get(type));
+            values.Add(FinalSkill.Get(type));
         }
-        values.Add(Skill.Rank());
+        values.Add(EntrySkill.Rank());
+        values.Add(HighestSkill.Rank());
+        values.Add(FinalSkill.Rank());
         values.Add(Score);
         return values.ToArray();
     }
@@ -26,9 +30,11 @@ public class PlayerHistoryEntry {
     public static string Header() {
         List<string> values = new List<string>();
         foreach (DifficultyType type in Enum.GetValues(typeof(DifficultyType))) {
-            values.Add(type.ToString().ToLowerInvariant());
+            values.Add(type.ToString().ToLower());
         }
-        values.Add("Rank");
+        values.Add("Entry Rank");
+        values.Add("Highest Rank");
+        values.Add("Final Rank");
         values.Add("Score");
         return string.Join(",", values.ToArray());
     }

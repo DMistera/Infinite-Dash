@@ -20,7 +20,7 @@ public class Cloud : ParallaxEntity {
         transform.localScale = new Vector3(size, size, size);
         spriteRenderer.sprite = sprites[UnityEngine.Random.Range(0, sprites.Length)];
         Color c = spriteRenderer.color;
-        c.a = (1f - parallaxEffect) * 0.5f;
+        c.a = (1f - parallaxEffect) * 0.2f;
         spriteRenderer.color = c;
     }
 }

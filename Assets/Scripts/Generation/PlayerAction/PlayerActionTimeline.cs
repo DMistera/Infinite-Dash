@@ -9,6 +9,8 @@ using UnityEngine;
 public class PlayerActionTimeline {
     public List<PlayerAction> actions;
 
+    private readonly static float MAX_SLIDE_LENGTH = 6f;
+
     public PlayerActionTimeline(List<PlayerAction> actions) {
         this.actions = actions;
     }
@@ -19,11 +21,14 @@ public class PlayerActionTimeline {
                 Type = PlayerActionType.SLIDE,
             }
         };
-        PlayerActionType type = NextType(PlayerActionType.SLIDE); ;
+        PlayerActionType type = NextType(PlayerActionType.SLIDE, difficulty); ;
         for (int i = 0; i < 10; i++) {
-            actions.Add(GenerateNextAction(type));
-            type = NextType(type);
+            actions.Add(GenerateNextAction(type, difficulty));
+            type = NextType(type, difficulty);
         }
+
+        CorrectDoubleJumpDifficulty(difficulty);
+        CorrectSlideLengthDifficulty(difficulty);
     }
 
     public static PlayerActionTimeline First() {
@@ -37,11 +42,41 @@ public class PlayerActionTimeline {
         return new PlayerActionTimeline(actions);
     }
 
-    private PlayerAction GenerateNextAction(PlayerActionType type) {
+    private void CorrectDoubleJumpDifficulty(Difficulty difficulty) {
+        int count = 0;
+        int countAll = 0;
+        foreach (PlayerAction action in actions) {
+            switch (action.Type) {
+                case PlayerActionType.JUMP: case PlayerActionType.FALL:
+                    countAll++;
+                    break;
+                case PlayerActionType.DOUBLE_JUMP:
+                    count++;
+                    break;
+            }
+        }
+        difficulty.Set(DifficultyType.DOUBLE_JUMP_FREQUENCY, (float)count / countAll);
+    }
+
+    private void CorrectSlideLengthDifficulty(Difficulty difficulty) {
+        int sum = 0;
+        int count = 0;
+        foreach (PlayerAction action in actions) {
+            if(action is SlideAction slideAction) {
+                count++;
+                sum += slideAction.Length;
+            }
+        }
+        float n = ((MAX_SLIDE_LENGTH + 1) / 2f)  * count - sum;
+        float d = (MAX_SLIDE_LENGTH - 1) * count;
+        difficulty.Set(DifficultyType.SLIDE_LENGTH, n / d);
+    }
+
+    private PlayerAction GenerateNextAction(PlayerActionType type, Difficulty difficulty) {
         switch (type) {
             case PlayerActionType.SLIDE:
                 return new SlideAction {
-                    Length = GenerateLength(),
+                    Length = GenerateLength(difficulty),
                     Type = type
                 };
             case PlayerActionType.JUMP:
@@ -65,8 +100,9 @@ public class PlayerActionTimeline {
         };
     }
 
-    private int GenerateLength() {
-        return UnityEngine.Random.Range(1, 6);
+    private int GenerateLength(Difficulty difficulty) {
+        float f = (1f - difficulty.Get(DifficultyType.SLIDE_LENGTH)) * UnityEngine.Random.Range(1f, MAX_SLIDE_LENGTH - 1f);
+        return 1 + Mathf.RoundToInt(f);
     }
 
     private float GetMean(PlayerActionType type) {
@@ -78,10 +114,10 @@ public class PlayerActionTimeline {
         };
     }
 
-    private PlayerActionType NextType(PlayerActionType previousType) {
+    private PlayerActionType NextType(PlayerActionType previousType, Difficulty difficulty) {
         return previousType switch {
-            PlayerActionType.JUMP => UnityEngine.Random.value < 0.75f ? PlayerActionType.SLIDE : PlayerActionType.DOUBLE_JUMP,
-            PlayerActionType.FALL => UnityEngine.Random.value < 0.75f ? PlayerActionType.SLIDE : PlayerActionType.DOUBLE_JUMP,
+            PlayerActionType.JUMP => UnityEngine.Random.value < difficulty.Get(DifficultyType.DOUBLE_JUMP_FREQUENCY) ? PlayerActionType.DOUBLE_JUMP : PlayerActionType.SLIDE,
+            PlayerActionType.FALL => UnityEngine.Random.value < difficulty.Get(DifficultyType.DOUBLE_JUMP_FREQUENCY) ? PlayerActionType.DOUBLE_JUMP : PlayerActionType.SLIDE,
             PlayerActionType.DOUBLE_JUMP => PlayerActionType.SLIDE,
             PlayerActionType.SLIDE => UnityEngine.Random.value < 0.75f ? PlayerActionType.JUMP : PlayerActionType.FALL,
             _ => throw new ArgumentOutOfRangeException(),

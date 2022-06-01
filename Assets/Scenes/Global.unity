@@ -248,13 +248,12 @@ MonoBehaviour:
   playerPrefab: {fileID: 2320231530827243513, guid: bf5842685b63150489e37eb266da1af2, type: 3}
   markerPrefab: {fileID: 1002327116322393921, guid: 32d46fa4a803d654a9c5c35fa9e23eb2, type: 3}
   chunkPrefab: {fileID: 4681367917807347206, guid: b4d319effd1e13748b361f1cd2ec7b74, type: 3}
-  mark: 1
+  mark: 0
   chunkGenerationPolicies:
   - {fileID: -3598195174421734995, guid: 2fded1bec4205114982ce99bdf1e9f1a, type: 3}
   - {fileID: -8309107226974217348, guid: 41e101ca0132c484b8ff156b3f53e87a, type: 3}
   - {fileID: -816792310647623482, guid: cd6c22e4087715e4291b67034d0acf31, type: 3}
   - {fileID: 3151016341983460144, guid: a97276a2b3371164a8d58891082dd4e9, type: 3}
-  - {fileID: 1028611068265081842, guid: ece4e996311fd38408ae32f9a866ff9a, type: 3}
   - {fileID: -1442123854372215088, guid: 4dd1a886a2311f54ebeaa2af64a2352f, type: 3}
   deltaTime: 0.01
 --- !u!4 &447581535
@@ -399,7 +398,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   librarySize: 100
   bufferSize: 3
-  dynamicDifficultyRange: 0.1
+  dynamicDifficultyRange: 0.2
   chunkPrefab: {fileID: 4681367917807347206, guid: b4d319effd1e13748b361f1cd2ec7b74, type: 3}
   generationMethod: 1
 --- !u!4 &1390566927
@@ -415,6 +414,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1424995294
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1424995296}
+  - component: {fileID: 1424995295}
+  m_Layer: 0
+  m_Name: Rank Provider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1424995295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1424995294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e4c94c8a1e61f84e9a983ee23a02757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rankData: {fileID: 4900000, guid: b560a982e043b31459f09a442aca6407, type: 3}
+--- !u!4 &1424995296
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1424995294}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1541753640
 GameObject:

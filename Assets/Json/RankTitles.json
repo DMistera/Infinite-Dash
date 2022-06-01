@@ -1,0 +1,26 @@
+﻿[
+	{
+		"min": 0.0,
+		"title": "Początkujący"
+	},
+	{
+		"min": 0.2,
+		"title": "Przeciętny"
+	},
+	{
+		"min": 0.4,
+		"title": "Dobry"
+	},
+	{
+		"min": 0.6,
+		"title": "Bardzo dobry"
+	},
+	{
+		"min": 0.8,
+		"title": "Mistrz"
+	},
+	{
+		"min": 0.9,
+		"title": "Arcymistrz"
+	}
+]

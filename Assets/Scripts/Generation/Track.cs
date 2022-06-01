@@ -6,6 +6,7 @@ using UnityEngine;
 public class Track : MonoBehaviour {
 
     public Player playerPrefab;
+    public Cloud cloudPrefab;
 
     public Action OnReset;
 
@@ -27,13 +28,14 @@ public class Track : MonoBehaviour {
         chunks.Clear();
         endPosition = Vector3.zero;
         Player = Instantiate(playerPrefab, transform);
+        GenerateClouds();
         OnReset?.Invoke();
         AddChunk(ChunkLibrary.Instance.FirstChunk);
     }
 
     void Update() {
         if (shouldAddChunk) {
-            AddChunk(ChunkLibrary.Instance.GetNext(Player));
+            AddChunk(ChunkLibrary.Instance.GetNext(Player.Skill));
             shouldAddChunk = false;
         }
 
@@ -52,5 +54,18 @@ public class Track : MonoBehaviour {
             shouldAddChunk = true;
         };
         chunks.Add(chunkClone);
+    }
+
+    private void GenerateClouds() {
+        for(float x = 0; x < 1000; x += 10) {
+            float y = UnityEngine.Random.Range(0f, 10f);
+            Vector3 v = new Vector3(x, y, 0f);
+            SpawnCloud(v);
+        }
+    }
+
+    private void SpawnCloud(Vector3 v) {
+        Cloud cloud = Instantiate(cloudPrefab, transform);
+        cloud.transform.localPosition = v;
     }
 }

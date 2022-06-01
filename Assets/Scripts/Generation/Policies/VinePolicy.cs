@@ -9,11 +9,6 @@ public class VinePolicy : ChunkGenerationPolicy {
 
     public Entity vinePrefab;
     public float vineDensity = 0.1f;
-    public override void ActionEnter(SimulationState state) {
-    }
-
-    public override void ActionExit(SimulationState state) {
-    }
 
     public override void Step(SimulationState state) {
         if(state.CurrentAction.Type == PlayerActionType.SLIDE) {
@@ -21,9 +16,6 @@ public class VinePolicy : ChunkGenerationPolicy {
                 SpawnVine(state);
             }
         }
-    }
-
-    public override void TriggerEnter(Chunk chunk, Player player, Collider2D collider2D) {
     }
 
     private void SpawnVine(SimulationState state) {

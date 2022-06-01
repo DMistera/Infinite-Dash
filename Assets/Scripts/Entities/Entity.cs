@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 public class Entity : MonoBehaviour {
+
+    public Entity Clone(Transform parent) {
+        Entity clone = Instantiate(this, parent);
+        clone.OriginPolicy = OriginPolicy;
+        return clone;
+    }
     public ChunkGenerationPolicy OriginPolicy { get; set; }
 }
 

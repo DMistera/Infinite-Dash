@@ -74,11 +74,11 @@
     <Compile Include="Assets\Scripts\UI\GameOverEvents.cs" />
     <Compile Include="Assets\Scripts\Entities\Spike.cs" />
     <Compile Include="Assets\Scripts\Generation\DifficultyType.cs" />
+    <Compile Include="Assets\Scripts\Test\PlayerHistory.cs" />
     <Compile Include="Assets\Scripts\Entities\Player\PlayerMesh.cs" />
     <Compile Include="Assets\Scripts\Management\PlayerPrefsKey.cs" />
     <Compile Include="Assets\Scripts\Generation\SimulationState.cs" />
     <Compile Include="Assets\Scripts\Generation\PlayerAction\AirAction.cs" />
-    <Compile Include="Assets\Scripts\Generation\Policies\CloudPolicy.cs" />
     <Compile Include="Assets\Scripts\Entities\Player\Controller\PlayerController.cs" />
     <Compile Include="Assets\Scripts\Entities\ParallaxEntity.cs" />
     <Compile Include="Assets\Scripts\Generation\PlayerAction\PlayerActionTimeline.cs" />
@@ -91,6 +91,7 @@
     <Compile Include="Assets\Packages\LeanTween\Framework\LTDescrOptional.cs" />
     <Compile Include="Assets\Scripts\Constants.cs" />
     <Compile Include="Assets\Scripts\Generation\GenerationMethod.cs" />
+    <Compile Include="Assets\Scripts\Test\EloMatchCollection.cs" />
     <Compile Include="Assets\Scripts\Generation\Policies\FallTrapPolicy.cs" />
     <Compile Include="Assets\Scripts\Generation\ChunkLibrary.cs" />
     <Compile Include="Assets\Scripts\Generation\Policies\SawbladePolicy.cs" />
@@ -98,16 +99,21 @@
     <Compile Include="Assets\Scripts\Entities\Player\Player.cs" />
     <Compile Include="Assets\Scripts\Generation\PlayerAction\PlayerAction.cs" />
     <Compile Include="Assets\Scripts\Generation\Chunk.cs" />
+    <Compile Include="Assets\Scripts\Test\PlayerHistoryEntry.cs" />
     <Compile Include="Assets\Scripts\Generation\Policies\SpikePolicy.cs" />
     <Compile Include="Assets\Scripts\Generation\Difficulty.cs" />
     <Compile Include="Assets\Scripts\Entities\GameCamera.cs" />
     <Compile Include="Assets\Packages\LeanTween\Framework\LeanSmooth.cs" />
     <Compile Include="Assets\Scripts\Entities\Entity.cs" />
+    <Compile Include="Assets\Scripts\Management\RankProvider.cs" />
     <Compile Include="Assets\Scripts\Management\SceneManager.cs" />
+    <Compile Include="Assets\Scripts\Entities\Player\Types\RepeatablePlayer.cs" />
+    <Compile Include="Assets\Scripts\Test\Tester.cs" />
     <Compile Include="Assets\Scripts\Generation\ChunkGenerator.cs" />
     <Compile Include="Assets\Scripts\Entities\Sawblade\SawbladeVariant.cs" />
     <Compile Include="Assets\Packages\LeanTween\Framework\LeanTest.cs" />
     <Compile Include="Assets\Scripts\Entities\Player\Controller\HumanController.cs" />
+    <Compile Include="Assets\Scripts\Entities\Player\Types\PlayPlayer.cs" />
     <Compile Include="Assets\Scripts\Entities\VineMesh.cs" />
     <Compile Include="Assets\Scripts\Generation\ChunkSolution.cs" />
     <Compile Include="Assets\Scripts\Entities\Sawblade\SawbladeMesh.cs" />
@@ -118,11 +124,7 @@
     <Compile Include="Assets\Scripts\Management\GameState.cs" />
     <Compile Include="Assets\Scripts\Generation\Policies\ChunkGenerationPolicy.cs" />
     <Compile Include="Assets\Scripts\Generation\Policies\VinePolicy.cs" />
-    <Compile Include="Assets\Scripts\Entities\Player\Types\PlayPlayer.cs" />
-    <Compile Include="Assets\Scripts\Entities\Player\Types\RepeatablePlayer.cs" />
-    <Compile Include="Assets\Scripts\Test\Tester.cs" />
-    <Compile Include="Assets\Scripts\Test\PlayerHistoryEntry.cs" />
-    <Compile Include="Assets\Scripts\Test\PlayerHistory.cs" />
+    <Compile Include="Assets\Scripts\Test\EloMatch.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Packages\TextMesh Pro\Shaders\TMPro.cginc" />

@@ -16,24 +16,30 @@ public class PlayerSkillLabel : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        string s = $"{prefix}: {Rank():0.000}";
+        string s = $"{prefix}: {Title()}\n";
         if (showDifference) {
-            float diff = Diff();
+            float diff = Diff()*1000;
             if (diff > 0) {
-                s += $"(<color=yellow>+{diff:0.000}</color>)";
+                s += $"Zdobyte punkty: <color=yellow>+{diff:0}</color> pkt\n";
             } else {
-                s += $"(<color=red>{diff:0.000}</color>)";
+                s += $"Zdobyte punkty: <color=red>{diff:0}</color> pkt\n";
             }
+            float tillNext = TillNext() * 1000;
+            s += $"Do następnej rangi potrzeba: {tillNext:0} pkt\n";
         }
         text.text = s;
     }
 
-    private float Rank() {
-        return PlayerProfile.Instance.PlayerSkill.Rank();
+    private string Title() {
+        return PlayerProfile.Instance.PlayerSkill.Title();
     }
 
     private float Diff() {
         PlayerSkill skill = PlayerProfile.Instance.PlayerSkill;
-        return skill.Rank() - skill.Previous().Rank();
+        return skill.Rank() - skill.First().Rank();
+    }
+
+    private float TillNext() {
+        return RankProvider.Instance.GetTillNext(PlayerProfile.Instance.PlayerSkill.Rank());
     }
 }

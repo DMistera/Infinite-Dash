@@ -12,6 +12,7 @@ public class Difficulty {
     }
 
     public void Set(DifficultyType type, float v) {
+        //Debug.Log($"Change from {map[type]} to {v} on {type}");
         map[type] = Mathf.Clamp(v, 0f, 1f);
     }
 
@@ -51,6 +52,10 @@ public class Difficulty {
             count++;
         }
         return sum / count;
+    }
+
+    public string Title() {
+        return RankProvider.Instance.GetTitle(Rank());
     }
 
     public override string ToString() {

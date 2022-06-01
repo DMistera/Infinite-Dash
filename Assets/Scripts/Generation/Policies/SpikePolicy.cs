@@ -35,8 +35,8 @@ public class SpikePolicy : ChunkGenerationPolicy {
 
     public override void Step(SimulationState state) {
         if (activateFlag) {
-            if (state.CurrentAction is AirAction airAction) {
-                if (airAction.LevelDifference >= 0) {
+            if (state.CurrentAction.Type == PlayerActionType.JUMP) {
+                if ((state.CurrentAction as AirAction).LevelDifference >= 0) {
                     SpawnSpike(state);
                     SpawnSolid(state);
                 }

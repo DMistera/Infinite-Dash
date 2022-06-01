@@ -9,6 +9,8 @@ public class PlatformPolicy : ChunkGenerationPolicy {
 
     public Solid platformPrefab;
     public Solid blockPrefab;
+    private int count = 0;
+    private int sum = 0;
 
     public override void ActionEnter(SimulationState state) {
         if (state.CurrentAction.Type == PlayerActionType.SLIDE) {
@@ -25,6 +27,11 @@ public class PlatformPolicy : ChunkGenerationPolicy {
         }
     }
 
+    public override void Finally(SimulationState state) {
+        float avg = (float)sum / count;
+        state.Difficulty.Set(DifficultyType.PLATFORM_LENGTH, (3f - avg) / 3f);
+    }
+
     public override void Step(SimulationState state) {
         if (state.CurrentAction.Type == PlayerActionType.SLIDE) {
             int lenght = (state.CurrentAction as SlideAction).Length;
@@ -35,14 +42,11 @@ public class PlatformPolicy : ChunkGenerationPolicy {
         }
     }
 
-    public override void TriggerEnter(Chunk chunk, Player player, Collider2D collider2D) {
-        
-    }
-
     private void SpawnExtension(SimulationState state, bool reverse) {
         float max = (1f - state.Difficulty.Get(DifficultyType.PLATFORM_LENGTH)) * 3f;
         int length = Mathf.RoundToInt(UnityEngine.Random.Range(0f, max));
-
+        sum += length;
+        count++;
         for (int i = 0; i < length; i++) {
             Solid solid = Instantiate(platformPrefab, state.Chunk.transform);
             Vector3 v = state.Player.transform.localPosition;
@@ -61,10 +65,11 @@ public class PlatformPolicy : ChunkGenerationPolicy {
             state.Chunk.Grid.Set(solid, v);
         }
         v = state.Player.transform.localPosition;
-        Vector3 snapped = Grid.SnapToGrid(v);
-        v.y = snapped.y;
-        state.Player.transform.localPosition = v;
-        state.Player.SetVelocityY(0f);
+        if (v.y < Mathf.Round(v.y)) {
+            v.y = Mathf.Round(v.y);
+            state.Player.transform.localPosition = v;
+            state.Player.SetVelocityY(0f);
+        }
     }
 }
 

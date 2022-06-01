@@ -59,8 +59,7 @@ public class ChunkGenerator : MonoBehaviour {
         player.ActiveChunk = chunk;
         PhysicsScene2D physicsScene2D = GetPhysicsScene2D();
         Physics2D.simulationMode = SimulationMode2D.Script;
-        float stepTime = 1f / player.forwardVelocity;
-        float stepTimeAccumulator = 0;
+        float nextStepX = 0;
         float timeAccumulator = 0;
         SimulationState state = new SimulationState {
             Player = player,
@@ -77,7 +76,7 @@ public class ChunkGenerator : MonoBehaviour {
             foreach (ChunkGenerationPolicy policy in chunkGenerationPolicies) {
                 policy.ActionEnter(state);
             }
-            float originalY = player.transform.localPosition.y;
+            float originalY = Mathf.Round(player.transform.localPosition.y);
             if (action.Type == PlayerActionType.JUMP || action.Type == PlayerActionType.DOUBLE_JUMP) {
                 player.OnSpace();
                 solution.JumpPositions.Add(player.transform.localPosition.x);
@@ -85,11 +84,11 @@ public class ChunkGenerator : MonoBehaviour {
             while (!ActionExitCondition(action, state)) {
                 state.ActionDeltaY = player.transform.localPosition.y - originalY;
                 player.SetVelocityX(player.forwardVelocity);
-                if (stepTimeAccumulator >= stepTime) {
+                if (player.transform.localPosition.x >= nextStepX) {
                     foreach (ChunkGenerationPolicy policy in chunkGenerationPolicies) {
                         policy.Step(state);
                     }
-                    stepTimeAccumulator -= stepTime;
+                    nextStepX += 1f;
                     state.Steps++;
                 }
                 if (mark) {
@@ -101,7 +100,6 @@ public class ChunkGenerator : MonoBehaviour {
                 if (!physicsScene2D.Simulate(deltaTime)) {
                     throw new Exception("Simulation could not run!");
                 }
-                stepTimeAccumulator += deltaTime;
                 timeAccumulator += deltaTime;
                 if (timeAccumulator > 15f) {
                     throw new Exception("Failed to generate chunk!");
@@ -131,6 +129,10 @@ public class ChunkGenerator : MonoBehaviour {
         CleanOutsideBounds(chunk);
         chunk.gameObject.SetActive(false);
         chunk.Ready = true;
+
+        foreach (ChunkGenerationPolicy policy in chunkGenerationPolicies) {
+            policy.Finally(state);
+        }
         callback?.Invoke(chunk);
     }
 
@@ -147,8 +149,8 @@ public class ChunkGenerator : MonoBehaviour {
             }
         };
 
-        BoxCollider2D collider = player.GetComponent<BoxCollider2D>();
-        collider.size *= 1.1f;
+        //BoxCollider2D collider = player.GetComponent<BoxCollider2D>();
+        //collider.size *= 1.5f;
         float lastX = 0f;
         for (float t = 0; t < chunk.Duration; t += deltaTime) {
             player.SetVelocityX(player.forwardVelocity);

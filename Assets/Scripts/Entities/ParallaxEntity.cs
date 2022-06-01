@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class ParallaxEntity : Entity {
+public class ParallaxEntity : MonoBehaviour {
     public float parallaxEffect = 1f;
 
     private new Camera camera;

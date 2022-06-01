@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   track: {fileID: 957353868}
-  iterations: 100
+  iterations: 500
   path: 
 --- !u!4 &119666469
 Transform:
@@ -199,6 +199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 834712373648904414, guid: ec3f2fa67c140cd47be1e0b37300cd22, type: 3}
+  cloudPrefab: {fileID: -1552030446126184418, guid: 93ddfd44e4ea7f14c8834624fb2ed73b, type: 3}
 --- !u!4 &957353869
 Transform:
   m_ObjectHideFlags: 0

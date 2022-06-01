@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spikePrefab: {fileID: 1595177149753679353, guid: bdcf02f37be05214584199fae3878124, type: 3}
-  blockPrefab: {fileID: 2390938222335930664, guid: 48e4e9d2cf2941446a199c5379695101, type: 3}
+  blockPrefab: {fileID: 2390938222335930664, guid: d3c87ab327a188540bd4ca095e94765e, type: 3}
   chainPrefab: {fileID: 232206713651388360, guid: 4bd2d426e7cf2454aa9bb8219fbdab2e, type: 3}

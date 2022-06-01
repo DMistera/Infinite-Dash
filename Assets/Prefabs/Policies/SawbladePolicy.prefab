@@ -44,3 +44,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bombPrefab: {fileID: 2987618695811954633, guid: f0a275f7fd613d64891dac5d9a09fc1a, type: 3}
+  safeRadius: 0.2

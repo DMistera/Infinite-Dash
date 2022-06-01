@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using UnityEngine;
 
 public class PlayerHistory {
     private readonly List<PlayerHistoryEntry> entries = new List<PlayerHistoryEntry>();
 
     public void AddEntry(PlayerSkill skill, int score) {
         entries.Add(new PlayerHistoryEntry {
-            Skill = new PlayerSkill(skill),
+            EntrySkill = new PlayerSkill(skill.First()),
+            HighestSkill = new PlayerSkill(skill.Last()),
+            FinalSkill = new PlayerSkill(skill),
             Score = score
         });
     }

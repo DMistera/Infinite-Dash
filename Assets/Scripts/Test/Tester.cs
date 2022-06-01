@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.IO;
 using UnityEngine;
 
@@ -7,8 +8,10 @@ public class Tester : MonoBehaviour {
     public Track track;
     public int iterations = 100;
     public string path;
+
     private int iteration = 1;
-    private PlayerHistory history = new PlayerHistory();
+    private readonly PlayerHistory history = new PlayerHistory();
+    private readonly EloMatchCollection eloMatchCollection = new EloMatchCollection();
 
     // Use this for initialization
     void Start() {
@@ -18,7 +21,7 @@ public class Tester : MonoBehaviour {
     private void HandleTrackReset() {
         PlayerHistoryEntry last = history.Last();
         if (last != null) {
-            track.Player.Skill = last.Skill;
+            track.Player.Skill = new PlayerSkill(last.FinalSkill);
         }
         else {
             track.Player.Skill = new PlayerSkill(Difficulty.Initial(0f));
@@ -31,12 +34,17 @@ public class Tester : MonoBehaviour {
                 GameManager.Instance.State = GameState.MENU;
             } else {
                 iteration++;
-                Debug.Log($"Testing: {iteration}/{iterations}");
+                Debug.Log($"Testing: {iteration - 1}/{iterations}");
             }
+        };
+        track.Player.Skill.OnUpdate += (Difficulty diff, float score, Difficulty mask) => {
+            eloMatchCollection.AddMatches(track.Player.Skill, diff, score, mask);
         };
     }
 
     void SaveTestResult() {
-        File.WriteAllText(path + "TestResult.csv", history.ToCSV());
+        string p = path + "TestResult" + DateTime.Now.ToString().Replace("/", "-").Replace(":", "-").Replace(" ", "");
+        File.WriteAllText(p + ".csv", history.ToCSV());
+        File.WriteAllText(p + "elo" + ".csv", eloMatchCollection.ToCSV());
     }
 }

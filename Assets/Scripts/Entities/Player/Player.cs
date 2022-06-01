@@ -55,16 +55,18 @@ public class Player : MonoBehaviour {
     public void Start() {
         if(!IsGeneratingChunk()) {
             GameCamera.Instance.CenterOnPlayer(this);
-        }
-        Physics2D.simulationMode = SimulationMode2D.Script;
 
-        if(Skill == null) {
-            Skill = new PlayerSkill(PlayerProfile.Instance.PlayerSkill);
+            if (Skill == null) {
+                Skill = new PlayerSkill(PlayerProfile.Instance.PlayerSkill);
+            }
+
+            Physics2D.simulationMode = SimulationMode2D.Script;
+
+            if (playSpeed == PlaySpeed.FASTEST) {
+                StartCoroutine(simulationCoroutine);
+            }
         }
 
-        if (playSpeed == PlaySpeed.FASTEST) {
-            StartCoroutine(simulationCoroutine);
-        }
     }
 
     public void OnDestroy() {
@@ -97,8 +99,9 @@ public class Player : MonoBehaviour {
         if (rigidbody.velocity.y < -50f) {
             Difficulty cause = Difficulty.Initial(0f);
             cause.Set(DifficultyType.PLATFORM_LENGTH, 1f);
+            cause.Set(DifficultyType.SLIDE_LENGTH, 1f);
             if (!canDoubleJump) {
-                cause.Set(DifficultyType.DOUBLE_JUMP, 1f);
+                cause.Set(DifficultyType.DOUBLE_JUMP_FREQUENCY, 1f);
             }
             Die(cause);
         }
@@ -133,10 +136,22 @@ public class Player : MonoBehaviour {
     public void OnTriggerEnter2D(Collider2D collider2D) {
         OnTriggerEnter?.Invoke(collider2D);
         if (!IsGeneratingChunk()) {
-            if(collider2D.GetComponent<Hazard>() != null) {
+            Hazard hazard = collider2D.GetComponent<Hazard>();
+            if (hazard != null) {
                 Difficulty cause = Difficulty.Initial(0f);
-                cause.Set(DifficultyType.BOMB_DENSITY, 1f);
-                cause.Set(DifficultyType.BOMB_DENSITY, 1f);
+                if(hazard.OriginPolicy is SawbladePolicy) {
+                    cause.Set(DifficultyType.SAWBLADE_DENSITY, 1f);
+                    cause.Set(DifficultyType.SAWBLADE_SPREAD, 1f);
+                }
+                else if(hazard.OriginPolicy is FallTrapPolicy) {
+                    cause.Set(DifficultyType.TRAP_FREQUENCY, 1f);
+                } 
+                else if (hazard.OriginPolicy is SpikePolicy) {
+                    cause.Set(DifficultyType.SPIKE_LENGTH, 1f);
+                }
+                if (!canDoubleJump) {
+                    cause.Set(DifficultyType.DOUBLE_JUMP_FREQUENCY, 1f);
+                }
                 Die(cause);
             }
         }
@@ -151,7 +166,7 @@ public class Player : MonoBehaviour {
         if(alive && !IsGeneratingChunk()) {
             mesh.Die();
             alive = false;
-            float delay = playSpeed == PlaySpeed.REAL_TIME ? 0.5f : 0;
+            float delay = playSpeed == PlaySpeed.REAL_TIME ? 0.5f : 0f;
             LeanTween.delayedCall(delay, () => {
                 Skill.DecreaseTo(ActiveChunk.Difficulty, cause);
                 if (saveSkillChanges) {
@@ -159,6 +174,16 @@ public class Player : MonoBehaviour {
                 }
                 OnDeath?.Invoke();
             });
+        }
+    }
+
+    public void HandleLeaveChunk(Chunk chunk) {
+        if(alive && chunk.Ranked) {
+            Score++;
+            Skill.IncreaseTo(chunk.Difficulty);
+            if (saveSkillChanges) {
+                Skill.Save();
+            }
         }
     }
 

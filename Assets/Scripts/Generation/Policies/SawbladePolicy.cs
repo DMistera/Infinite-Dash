@@ -8,24 +8,25 @@ using UnityEngine;
 public class SawbladePolicy : ChunkGenerationPolicy {
 
     public Sawblade bombPrefab;
+    public float safeRadius = 0.2f;
+    private int counter = 0;
+    private int counterAll = 0;
 
-    public override void ActionEnter(SimulationState state) {
-        
-    }
 
-    public override void ActionExit(SimulationState state) {
-        
-    }
+    private List<Sawblade> sawblades = new List<Sawblade>();
 
     public override void Step(SimulationState state) {
         if (state.CurrentAction.Type == PlayerActionType.JUMP || state.CurrentAction.Type == PlayerActionType.FALL || state.CurrentAction.Type == PlayerActionType.DOUBLE_JUMP) {
-            float distance = 2.3f - state.Difficulty.Get(DifficultyType.BOMB_SPREAD) * 1.5f;
-            if (UnityEngine.Random.value < state.Difficulty.Get(DifficultyType.BOMB_DENSITY)) {
+            float distance = 2.3f - state.Difficulty.Get(DifficultyType.SAWBLADE_SPREAD) * 1.5f;
+            if (UnityEngine.Random.value < state.Difficulty.Get(DifficultyType.SAWBLADE_DENSITY)) {
+                counter++;
                 SpawnSawblade(state.Chunk, state.Player, distance);
             }
-            if (UnityEngine.Random.value < state.Difficulty.Get(DifficultyType.BOMB_DENSITY)) {
+            if (UnityEngine.Random.value < state.Difficulty.Get(DifficultyType.SAWBLADE_DENSITY)) {
+                counter++;
                 SpawnSawblade(state.Chunk, state.Player, -distance);
             }
+            counterAll += 2;
         }
     }
 
@@ -37,6 +38,16 @@ public class SawbladePolicy : ChunkGenerationPolicy {
         }
     }
 
+    public override void Finally(SimulationState state) {
+        foreach (Sawblade sawblade in sawblades) {
+            if(sawblade != null) {
+                sawblade.GetComponent<CircleCollider2D>().radius -= safeRadius;
+            }
+        }
+        state.Difficulty.Set(DifficultyType.SAWBLADE_DENSITY, (float)counter / counterAll);
+
+    }
+
     private void SpawnSawblade(Chunk chunk, Player player, float offset) {
         Vector2 shift = player.GetComponent<Rigidbody2D>().velocity;
         shift.Normalize();
@@ -46,6 +57,8 @@ public class SawbladePolicy : ChunkGenerationPolicy {
         if (chunk.Grid.IsEmpty(pos)) {
             Sawblade sawblade = SpawnEntity(chunk, bombPrefab, pos) as Sawblade;
             sawblade.Init();
+            sawblades.Add(sawblade);
+            sawblade.GetComponent<CircleCollider2D>().radius += safeRadius;
         }
     }
 }

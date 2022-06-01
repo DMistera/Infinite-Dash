@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   platformPrefab: {fileID: 6931431659471903219, guid: f1bc06f9a2780b6408fc73e1c8bc06e7, type: 3}
-  blockPrefab: {fileID: 2390938222335930664, guid: 48e4e9d2cf2941446a199c5379695101, type: 3}
+  blockPrefab: {fileID: 2390938222335930664, guid: d3c87ab327a188540bd4ca095e94765e, type: 3}
