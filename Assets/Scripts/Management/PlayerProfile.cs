@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Globalization;
 using UnityEngine;
 
 
@@ -14,6 +15,8 @@ public class PlayerProfile : MonoBehaviour {
     }
     private static PlayerProfile instance;
 
+    public PlayerHistory PlayerHistory { get; private set; } = new PlayerHistory();
+
     public PlayerSkill PlayerSkill {
         get {
             if (playerSkill == null) {
@@ -28,7 +31,11 @@ public class PlayerProfile : MonoBehaviour {
     }
     private PlayerSkill playerSkill;
 
-    public void Update() {
+    public void Start() {
+        string playerHistoryCsv = PlayerPrefs.GetString(PlayerPrefsKey.PLAYER_HISTORY.ToString());
+        if(playerHistoryCsv.Length > 0) {
+            PlayerHistory.AddEntriesFromCSV(playerHistoryCsv);
+        }
     }
 
     private PlayerSkill InitializePlayerSkill() {
@@ -39,5 +46,9 @@ public class PlayerProfile : MonoBehaviour {
 
     private void SavePlayerSkill(PlayerSkill playerSkill) {
         PlayerPrefs.SetString(PlayerPrefsKey.PLAYER_SKILL.ToString(), playerSkill.ToString());
+    }
+
+    public void SavePlayerHistory() {
+        PlayerPrefs.SetString(PlayerPrefsKey.PLAYER_HISTORY.ToString(), PlayerHistory.ToCSV());
     }
 }

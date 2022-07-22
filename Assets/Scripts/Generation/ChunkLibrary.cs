@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 
@@ -96,7 +97,7 @@ public class ChunkLibrary : MonoBehaviour {
         if(library[index] != null) {
             Destroy(library[index].Chunk.gameObject);
         }
-        library[index] = new LibraryEntry(chunk);
+        library[index] = new LibraryEntry(chunk, LowestUseCount());
     }
 
     private int WorstLibraryEntryIndex() {
@@ -125,6 +126,19 @@ public class ChunkLibrary : MonoBehaviour {
             }
         }
         return index;
+    }
+
+    private int LowestUseCount() {
+        int min = int.MaxValue;
+        foreach (LibraryEntry entry in library) {
+            if(entry != null && entry.UseCount < min) {
+                min = entry.UseCount;
+            }
+        }
+        if (min == int.MaxValue) {
+            return 0;
+        }
+        return min;
     }
 
     private IEnumerator LoadLibrary() {
@@ -191,9 +205,13 @@ public class ChunkLibrary : MonoBehaviour {
     }
 
     private class LibraryEntry {
-        public LibraryEntry(Chunk chunk) {
+
+        public LibraryEntry(Chunk chunk, int useCount) {
             Chunk = chunk;
-            UseCount = 0;
+            UseCount = useCount;
+        }
+
+        public LibraryEntry(Chunk chunk) : this(chunk, 0) {
         }
 
         public Chunk Chunk { get; set; }

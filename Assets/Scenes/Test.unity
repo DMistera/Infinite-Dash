@@ -155,6 +155,22 @@ MonoBehaviour:
   track: {fileID: 957353868}
   iterations: 500
   path: 
+  initialDifficulty:
+  - type: 0
+    value: 0.14
+  - type: 1
+    value: 0.15
+  - type: 2
+    value: 0.27
+  - type: 3
+    value: 0.12
+  - type: 4
+    value: 0.42
+  - type: 5
+    value: 1
+  - type: 6
+    value: 0.05
+  updateSkill: 0
 --- !u!4 &119666469
 Transform:
   m_ObjectHideFlags: 0

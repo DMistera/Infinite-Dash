@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 
 public enum GameState {
-    PLAY, LOADING, MENU, GAME_OVER, TEST
+    PLAY, LOADING, MENU, GAME_OVER, TEST, HELP
 }
 

@@ -11,7 +11,9 @@ namespace Assets.Scripts.UI {
 
         // Update is called once per frame
         void Update() {
-
+            if (Input.GetKeyDown(KeyCode.Space)) {
+                Restart();
+            }
         }
 
         public void Restart() {

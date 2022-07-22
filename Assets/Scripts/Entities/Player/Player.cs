@@ -148,6 +148,9 @@ public class Player : MonoBehaviour {
                 } 
                 else if (hazard.OriginPolicy is SpikePolicy) {
                     cause.Set(DifficultyType.SPIKE_LENGTH, 1f);
+                } else {
+                    cause.Set(DifficultyType.PLATFORM_LENGTH, 1f);
+                    cause.Set(DifficultyType.SLIDE_LENGTH, 1f);
                 }
                 if (!canDoubleJump) {
                     cause.Set(DifficultyType.DOUBLE_JUMP_FREQUENCY, 1f);

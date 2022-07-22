@@ -8,5 +8,9 @@ using System.Threading.Tasks;
 public class EloMatch {
     public float Difference { get; set; }
     public float Score { get; set; }
+
+    public override string ToString() {
+        return $"{Difference},{(int)Score}";
+    }
 }
 

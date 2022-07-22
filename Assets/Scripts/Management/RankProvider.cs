@@ -44,7 +44,26 @@ public class RankProvider : MonoBehaviour {
                 return entry.Min - rank;
             }
         }
-        throw new Exception("Rank title not found!");
+        throw new Exception($"Rank title not found for {rank}!");
+    }
+
+    public float GetOverMin(float rank) {
+        for (int i = 0; i < entries.Count; i++) {
+            if (entries[i].Min > rank) {
+                return rank -  entries[i - 1].Min;
+            }
+        }
+        throw new Exception($"Rank title not found for {rank}!");
+    }
+
+    public float GetRange(float rank) {
+        for(int i = 0; i < entries.Count; i++) {
+            if (entries[i].Min > rank) {
+                float prev = (i - 1) > 0 ? entries[i - 1].Min : 0;
+                return entries[i].Min - prev;
+            }
+        }
+        throw new Exception($"Rank title not found for {rank}!");
     }
 
     private class RankDataEntry {

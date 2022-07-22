@@ -60,7 +60,8 @@ public class FallTrapPolicy : ChunkGenerationPolicy {
     }
 
     public override void Finally(SimulationState state) {
-        state.Difficulty.Set(DifficultyType.TRAP_FREQUENCY, (float)counter / counterAll);
+        float v = counterAll == 0 ? 0f : (float)counter / counterAll;
+        state.Difficulty.Set(DifficultyType.TRAP_FREQUENCY, v);
     }
 }
 

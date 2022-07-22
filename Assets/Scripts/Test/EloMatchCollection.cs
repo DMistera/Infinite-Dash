@@ -8,12 +8,13 @@ using UnityEngine;
 public class EloMatchCollection {
 
     private readonly List<EloMatch> matches = new List<EloMatch>();
-    private static readonly float RANGE = 1f;
-    private static readonly int POINT_COUNT = 200;
+    private static readonly float RANGE = 2f;
+    private static readonly int POINT_COUNT = 40;
+    private static readonly DifficultyType[] BANNED_TYPES = new DifficultyType[] { DifficultyType.TRAP_FREQUENCY };
 
     public void AddMatches(PlayerSkill skill, Difficulty difficulty, float score, Difficulty mask) {
         foreach (DifficultyType type in Enum.GetValues(typeof(DifficultyType))) {
-            if (mask.Get(type) > 0.5f) {
+            if (!BANNED_TYPES.Contains(type) && mask.Get(type) > 0.5f) {
                 float diff = difficulty.Get(type) - skill.Get(type);
                 matches.Add(new EloMatch {
                     Difference = diff,
@@ -42,10 +43,18 @@ public class EloMatchCollection {
         return result;
     }
 
-    public string ToCSV() {
+    /*public string ToCSV() {
         List<string> result = new List<string>();
         foreach (Vector2 v in CreateChart()) {
             result.Add(v.x + "," + v.y);
+        }
+        return string.Join("\n", result.ToArray());
+    }*/
+
+    public string ToCSV() {
+        List<string> result = new List<string>();
+        foreach (EloMatch match in matches) {
+            result.Add(match.ToString());
         }
         return string.Join("\n", result.ToArray());
     }

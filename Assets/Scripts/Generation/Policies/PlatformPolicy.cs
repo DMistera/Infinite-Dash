@@ -29,7 +29,7 @@ public class PlatformPolicy : ChunkGenerationPolicy {
 
     public override void Finally(SimulationState state) {
         float avg = (float)sum / count;
-        state.Difficulty.Set(DifficultyType.PLATFORM_LENGTH, (3f - avg) / 3f);
+        state.Difficulty.Set(DifficultyType.PLATFORM_LENGTH, (3f - avg*2) / 3f);
     }
 
     public override void Step(SimulationState state) {

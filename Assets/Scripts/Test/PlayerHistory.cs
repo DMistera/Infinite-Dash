@@ -1,20 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+using SimpleFileBrowser;
 
 public class PlayerHistory {
     private readonly List<PlayerHistoryEntry> entries = new List<PlayerHistoryEntry>();
 
     public void AddEntry(PlayerSkill skill, int score) {
         entries.Add(new PlayerHistoryEntry {
-            EntrySkill = new PlayerSkill(skill.First()),
-            HighestSkill = new PlayerSkill(skill.Last()),
+            EntrySkillRank = new PlayerSkill(skill.First()).Rank(),
+            HighestSkillRank = new PlayerSkill(skill.Last()).Rank(),
             FinalSkill = new PlayerSkill(skill),
             Score = score
         });
+    }
+
+    public void AddEntriesFromCSV(string csv) {
+        foreach(string line in csv.Split('\n').Skip(1)) {
+            entries.Add(new PlayerHistoryEntry(line));
+        }
     }
 
     public string ToCSV() {
@@ -25,6 +31,13 @@ public class PlayerHistory {
             result.Add(entry.ToRow());
         }
         return string.Join("\n", result.ToArray());
+    }
+
+    public void Export() {
+        FileBrowser.ShowSaveDialog((string[] paths) => {
+            File.WriteAllText(paths[0], ToCSV());
+        }, null, FileBrowser.PickMode.Files, title: "Zapisz wyniki", initialFilename: "wyniki.csv", allowMultiSelection: false);
+        //string path = EditorUtility.SaveFilePanel("Zapisz wyniki", "", "wyniki.csv", "csv");
     }
 
     public PlayerHistoryEntry Last() {

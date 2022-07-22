@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ public class Tester : MonoBehaviour {
     public Track track;
     public int iterations = 100;
     public string path;
+    public DifficultyEntry[] initialDifficulty;
+    public bool updateSkill = true;
 
     private int iteration = 1;
     private readonly PlayerHistory history = new PlayerHistory();
@@ -21,10 +24,15 @@ public class Tester : MonoBehaviour {
     private void HandleTrackReset() {
         PlayerHistoryEntry last = history.Last();
         if (last != null) {
-            track.Player.Skill = new PlayerSkill(last.FinalSkill);
+            if (updateSkill) {
+                track.Player.Skill = new PlayerSkill(last.FinalSkill);
+            }
+            else {
+                track.Player.Skill = new PlayerSkill(new Difficulty(initialDifficulty));
+            }
         }
         else {
-            track.Player.Skill = new PlayerSkill(Difficulty.Initial(0f));
+            track.Player.Skill = new PlayerSkill(new Difficulty(initialDifficulty));
         }
         track.Player.OnDeath += () => {
             history.AddEntry(track.Player.Skill, track.Player.Score);
